@@ -1,0 +1,19 @@
+package com.springboot.controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/apiinventario")
+public class PersonaController {
+
+	@GetMapping("/alta")
+	public String alta(){
+		return "Microservicio de Inventario levantado!!";
+	}
+	@GetMapping("/prueba")
+	public String prueba(){
+		return "esto es prueba!!";
+	}
+}
