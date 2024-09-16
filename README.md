@@ -7,8 +7,8 @@ Para agregar datos de ejemplo a la base de datos y realizar pruebas, puedes ejec
 ```sql
 
 -- Creación de cargos
-INSERT INTO cargo (cargo_id, nombre) VALUES (1, 'ESTUDIANTE'),
-                                            (2, 'CLIENTE');
+INSERT INTO cargo (cargo_id, nombre) VALUES (1, 'ESTUDIANTE');
+INSERT INTO cargo (cargo_id, nombre) VALUES (2, 'CLIENTE');
 
 -- Creación de personas
 INSERT INTO persona (persona_id, apellido, codigo, fecha_nacimiento, nombre, cargo_id) VALUES (1, 'Orihuela', '20254124','2000-08-24','Luis', 1);
