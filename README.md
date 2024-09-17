@@ -1,4 +1,22 @@
 "# Backend" 
+# Estructura del Proyecto - Microservicios
+
+Este proyecto está basado en una arquitectura de microservicios, con las siguientes características:
+
+- **Frontend**: Implementado con Angular para la aplicación web y Flutter para la aplicación móvil.
+- **Gateway**: Utilizamos un API Gateway con Spring Cloud Gateway para gestionar todas las peticiones entrantes.
+- **Eureka**: Servicio de descubrimiento de microservicios con Spring Cloud Netflix Eureka.
+- **Microservicios**:
+  - `usuario-service`: Gestiona la autenticación y manejo de usuarios.
+  - `inventario-service`: Controla la gestión del inventario de máquinas y materiales.
+  - `pedidos-service`: Gestiona los pedidos y el uso de materiales.
+  - `prestamo-service`: Gestiona los préstamos de materiales y su mantenimiento.
+- **Base de Datos**: Usamos MySQL como base de datos principal, y phpMyAdmin para la gestión de la base de datos.
+
+## Arquitectura
+[![Proyecto-de-Fab-Lab-Microservicios.png](https://i.postimg.cc/VLnXbTM3/Proyecto-de-Fab-Lab-Microservicios.png)](https://postimg.cc/ppVmwssZ)
+
+
 
 # Data sintética para la base de datos para realizar pruebas y testeo
 
