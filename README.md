@@ -10,10 +10,10 @@ Este proyecto está basado en una arquitectura de microservicios, con las siguie
   - `usuario-service`: Gestiona la autenticación y manejo de usuarios.
   - `inventario-service`: Controla la gestión del inventario de máquinas y materiales.
   - `pedidos-service`: Gestiona los pedidos y el uso de materiales.
-  - `prestamo-service`: Gestiona los préstamos de materiales y su mantenimiento.
+  - `prestamo-service`: Gestiona los préstamos de materiales.
 - **Base de Datos**: Usamos MySQL como base de datos principal, y phpMyAdmin para la gestión de la base de datos.
 
-## Arquitectura
+## Gráfico de la arquitectura de microservicios para el proyecto:
 [![Proyecto-de-Fab-Lab-Microservicios.png](https://i.postimg.cc/VLnXbTM3/Proyecto-de-Fab-Lab-Microservicios.png)](https://postimg.cc/ppVmwssZ)
 
 
