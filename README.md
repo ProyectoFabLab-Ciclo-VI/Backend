@@ -1,4 +1,3 @@
-"# Backend" 
 # Estructura del Proyecto - Microservicios
 
 Este proyecto está basado en una arquitectura de microservicios, con las siguientes características:
