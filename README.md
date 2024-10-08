@@ -28,10 +28,10 @@ INSERT INTO cargo (cargo_id, nombre) VALUES (1, 'ESTUDIANTE');
 INSERT INTO cargo (cargo_id, nombre) VALUES (2, 'CLIENTE');
 
 -- Creación de personas
-INSERT INTO persona (persona_id, apellido, codigo, fecha_nacimiento, nombre, cargo_id) VALUES (1, 'Orihuela', '20254124','2000-08-24','Luis', 1);
-INSERT INTO persona (persona_id, apellido, codigo, fecha_nacimiento, nombre, cargo_id) VALUES (2, 'Ramos', '20254155','1999-08-24','Arturo', 1);
-INSERT INTO persona (persona_id, apellido, codigo, fecha_nacimiento, nombre, cargo_id) VALUES (3, 'Ruidiaz Flores', '20254120','2000-08-24','Juan', 1);
-INSERT INTO persona (persona_id, apellido, codigo, fecha_nacimiento, nombre, cargo_id) VALUES (4, 'Quispe Mamani', '20254127','2001-08-24','Esau', 1);
+INSERT INTO persona (persona_id, apellido, codigo, email, fecha_nacimiento, nombre, cargo_id) VALUES (1, 'Orihuela', '20254124', 'luis.orihuela@upeu.edu.pe', '2000-08-24','Luis', 1);
+INSERT INTO persona (persona_id, apellido, codigo, email, fecha_nacimiento, nombre, cargo_id) VALUES (2, 'Ramos', '20254155', 'arturo.ramos@upeu.edu.pe', '1999-08-24','Arturo', 1);
+INSERT INTO persona (persona_id, apellido, codigo, email, fecha_nacimiento, nombre, cargo_id) VALUES (3, 'Ruidiaz Flores', 'juan.ruidiaz@upeu.edu.pe', '20254120','2000-08-24','Juan', 1);
+INSERT INTO persona (persona_id, apellido, codigo, email, fecha_nacimiento, nombre, cargo_id) VALUES (4, 'Quispe Mamani', 'esau.quispe@upeu.edu.pe', '20254127','2001-08-24','Esau', 1);
 
 -- Creación de usuarios
 INSERT INTO usuario (usuario_id, password, username, persona_id) VALUES (1, '123456', 'luisbeto', 1);
