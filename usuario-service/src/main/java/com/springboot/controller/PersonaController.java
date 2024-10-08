@@ -46,6 +46,7 @@ public class PersonaController {
 				                      personaDTO.getApellido(),
 				                      personaDTO.getFecha_nacimiento(),
 				                      personaDTO.getCodigo(),
+				                      personaDTO.getEmail(),
 				                      cargo);
 		personaService.save(persona);
 		return new ResponseEntity<>(persona, HttpStatus.CREATED);
@@ -58,7 +59,7 @@ public class PersonaController {
 		persona.setApellido(personaDTO.getApellido());
 		persona.setFecha_nacimiento(personaDTO.getFecha_nacimiento());
 		persona.setCodigo(personaDTO.getCodigo());
-		persona.setCodigo(personaDTO.getCodigo());
+		persona.setEmail(personaDTO.getEmail());
 		personaService.save(persona);
 		return new ResponseEntity("Persona actualizada", HttpStatus.OK);
 	}

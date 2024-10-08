@@ -1,6 +1,7 @@
 package com.springboot.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -57,8 +58,8 @@ public class UsuarioController {
 	}
 
 	@GetMapping("/listar")
-	public ResponseEntity<Page<Usuario>> listarUsuario(@RequestParam (defaultValue = "0") int page,
-													   @RequestParam (defaultValue = "5") int size) {
+	public ResponseEntity<Page<Usuario>> listarUsuario(@RequestParam  int page,
+													   @RequestParam  int size) {
 		
 		Page<Usuario> listUsuario = usuarioService.getAllUsuarios(page, size);
 		return new ResponseEntity<Page<Usuario>>(listUsuario, HttpStatus.OK);
@@ -66,7 +67,16 @@ public class UsuarioController {
 
 	@PutMapping("/update/{id}")
 	public ResponseEntity<?> updateUsuario(@PathVariable("id") int id, @RequestBody UsuarioDTO usuarioDTO) {
-		Usuario usuario = usuarioService.getOne(id).get();
+		//Usuario usuario = usuarioService.getOne(id).get();
+		//usuario.setUsername(usuarioDTO.getUsername());
+		//usuario.setPassword(usuarioDTO.getPassword());
+		//Verificar si el usuario existe
+		Optional<Usuario> usuarioOpt = usuarioService.getOne(id);
+		//Si en caso el usuario no existe
+		if (!usuarioOpt.isPresent()) {
+			return new ResponseEntity<>("Usuario no encontrado", HttpStatus.NOT_FOUND);
+		}
+		Usuario usuario = usuarioOpt.get();
 		usuario.setUsername(usuarioDTO.getUsername());
 		usuario.setPassword(usuarioDTO.getPassword());
 
@@ -77,6 +87,7 @@ public class UsuarioController {
 			personaExistente.setCodigo(usuarioDTO.getPersona().getCodigo());
 			personaExistente.setNombre(usuarioDTO.getPersona().getNombre());
 			personaExistente.setFecha_nacimiento(usuarioDTO.getPersona().getFecha_nacimiento());
+			personaExistente.setEmail(usuarioDTO.getPersona().getEmail());
 
 			// Y aca asignamos el cargo tambien
 			if (usuarioDTO.getPersona().getCargo() != null) {

@@ -32,6 +32,7 @@ public class Persona {
 	private String apellido;
 	private Date fecha_nacimiento;
 	private String codigo;
+	private String email;
 	
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "cargo_id")
@@ -41,12 +42,13 @@ public class Persona {
 	@JsonIgnore
 	private Usuario usuario;
 
-	public Persona(String nombre, String apellido, Date fecha_nacimiento, String codigo, Cargo cargo) {
+	public Persona(String nombre, String apellido, Date fecha_nacimiento, String codigo, String email, Cargo cargo) {
 		
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.fecha_nacimiento = fecha_nacimiento;
 		this.codigo = codigo;
+		this.email = email;
 		this.cargo = cargo;
 	}
 	

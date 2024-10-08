@@ -19,6 +19,7 @@ public class PersonaDTO {
 	private String apellido;
 	private Date fecha_nacimiento;
 	private String codigo;
+	private String email;
 	
 	private Cargo cargo;
 }
