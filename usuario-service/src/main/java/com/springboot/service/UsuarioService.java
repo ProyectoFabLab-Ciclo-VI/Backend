@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 
@@ -18,6 +20,10 @@ public class UsuarioService {
 
 	@Autowired
 	private UsuarioRepository usuarioRepository;
+	
+	//Esta injección para el service de email
+	@Autowired
+	private JavaMailSender mailSender;
 	
 	//Esto es para listar pero por paginación
 	public Page<Usuario> getAllUsuarios(int page, int size){
@@ -48,5 +54,14 @@ public class UsuarioService {
 		
 		//Y aca validamos si el usuario existe y la contraseña coincide
 		return usuario != null && usuario.getPassword().equals(password);
+	}
+	
+	//Este método sirve para enviar email de confirmación a los nuevos usuarios
+	public void sendEmail(String to, String subject, String text) {
+		SimpleMailMessage message = new SimpleMailMessage();
+		message.setTo(to);
+		message.setSubject(subject);
+		message.setText(text);
+		mailSender.send(message);		
 	}
 }

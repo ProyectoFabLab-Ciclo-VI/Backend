@@ -43,6 +43,14 @@ public class UsuarioController {
 	public ResponseEntity<?> createUsuario(@RequestBody UsuarioDTO usuarioDTO) {
 		Usuario usuario = new Usuario(usuarioDTO.getUsername(), usuarioDTO.getPassword(), usuarioDTO.getPersona());
 		usuarioService.save(usuario);
+		
+		//Aca enviamos el email de confirmación
+		String email = usuarioDTO.getPersona().getEmail();
+		String subject = "Confirmación de correo";
+		String message = "Hola " + usuarioDTO.getPersona().getNombre() + ", tu registro a la aplicación de Fablab ha sido exitosa !!";
+		usuarioService.sendEmail(email, subject, message);
+		
+		
 		return new ResponseEntity<>(usuario, HttpStatus.CREATED);
 	}
 
