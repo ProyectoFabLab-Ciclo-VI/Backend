@@ -7,13 +7,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 
 import com.springboot.entity.Usuario;
 import com.springboot.repository.UsuarioRepository;
+
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 
 @Service
 public class UsuarioService {
@@ -56,12 +61,22 @@ public class UsuarioService {
 		return usuario != null && usuario.getPassword().equals(password);
 	}
 	
-	//Este método sirve para enviar email de confirmación a los nuevos usuarios
+	//Este método sirve para enviar un email de confirmación a los nuevos usuarios (texto)
 	public void sendEmail(String to, String subject, String text) {
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setTo(to);
 		message.setSubject(subject);
 		message.setText(text);
 		mailSender.send(message);		
+	}
+	
+	//Este método sirve para enviar un email de confirmación a los nuevos usuarios (html)
+	public void sendHtmlEmail(String to, String subject, String body) throws MailException, MessagingException {
+		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message, true); //true para indicar que es multipart
+		helper.setTo(to);
+		helper.setSubject(subject);
+		helper.setText(body, true); //true para indicar que el contenido es HTML
+		mailSender.send(message);
 	}
 }

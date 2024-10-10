@@ -47,10 +47,59 @@ public class UsuarioController {
 		//Aca enviamos el email de confirmación
 		String email = usuarioDTO.getPersona().getEmail();
 		String subject = "Confirmación de correo";
-		String message = "Hola " + usuarioDTO.getPersona().getNombre() + ", tu registro a la aplicación de Fablab ha sido exitosa !!";
-		usuarioService.sendEmail(email, subject, message);
+		//Con la linea 51 y 52 podemos enviar enviar un email de en forma de texto
+		//String message = "Hola " + usuarioDTO.getPersona().getNombre() + ", tu registro a la aplicación de Fablab ha sido exitosa !!";
+		//usuarioService.sendEmail(email, subject, message);
 		
+		//Ahora implementaremos para enviar enviar une email con HTML
+		String message = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">" +
+	            "<html xmlns=\"http://www.w3.org/1999/xhtml\">" +
+	            "<head>" +
+	            "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />" +
+	            "<meta name=\"x-apple-disable-message-reformatting\" />" +
+	            "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />" +
+	            "<meta name=\"color-scheme\" content=\"light dark\" />" +
+	            "<meta name=\"supported-color-schemes\" content=\"light dark\" />" +
+	            "<title></title>" +
+	            "<style type=\"text/css\" rel=\"stylesheet\" media=\"all\">" +
+	            "@import url(\"https://fonts.googleapis.com/css?family=Nunito+Sans:400,700&display=swap\");" +
+	            "body { width: 100% !important; height: 100%; margin: 0; -webkit-text-size-adjust: none; }" +
+	            "a { color: #3869D4; }" +
+	            "td { word-break: break-word; }" +
+	            "body, td, th { font-family: \"Nunito Sans\", Helvetica, Arial, sans-serif; }" +
+	            "h1 { margin-top: 0; color: #333333; font-size: 22px; font-weight: bold; text-align: left; }" +
+	            "p, ul, ol, blockquote { margin: .4em 0 1.1875em; font-size: 16px; line-height: 1.625; }" +
+	            "body { background-color: #F2F4F6; color: #51545E; }" +
+	            ".email-wrapper { width: 100%; margin: 0; padding: 0; background-color: #F2F4F6; }" +
+	            ".email-body { width: 100%; margin: 0; padding: 0; }" +
+	            ".email-body_inner { width: 570px; margin: 0 auto; padding: 0; background-color: #FFFFFF; }" +
+	            ".content-cell { padding: 45px; }" +
+	            "</style>" +
+	            "</head>" +
+	            "<body>" +
+	            "<table class=\"email-wrapper\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">" +
+	            "<tr><td align=\"center\">" +
+	            "<table class=\"email-content\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">" +
+	            "<tr><td class=\"email-body\" width=\"570\" cellpadding=\"0\" cellspacing=\"0\">" +
+	            "<table class=\"email-body_inner\" align=\"center\" width=\"570\" cellpadding=\"0\" cellspacing=\"0\">" +
+	            "<tr><td class=\"content-cell\">" +
+	            "<div class=\"f-fallback\">" +
+	            "<h1>¡Hola, " + usuarioDTO.getPersona().getNombre() + "!</h1>" +
+	            "<p>Nos emociona darte la bienvenida a <strong>FabLab</strong>.</p>" +
+	            "<p>Gracias por registrarte en nuestra aplicación. A partir de ahora, podrás gestionar fácilmente cualquier servicio que brindamos y disfrutar de una experiencia optimizada.</p>" +
+	            "<p>Si tienes alguna duda o necesitas ayuda, no dudes en contactarnos. Estamos aquí para apoyarte en cada paso, puedes acercate a nuestra oficina o enviarnos un correo a: fablabproyecto@gmail.com</p>" +
+	            "<p>¡Que disfrutes al máximo la aplicación!</p>" +
+	            "<p>Saludos cordiales,<br>El equipo de FabLab</p>" +
+	            "<p class=\"sub\">Visita también nuestra web: <a href=\"#\">https://www.fablabs.io/labs/fablabUPeULima</a></p>" +
+	            "</div></td></tr></table></td></tr></table></td></tr></table>" +
+	            "</body></html>";
 		
+		try {
+			usuarioService.sendHtmlEmail(email, subject, message);
+		} catch (Exception e) {
+			return new ResponseEntity<>("Error al enviar el correo" + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+				
 		return new ResponseEntity<>(usuario, HttpStatus.CREATED);
 	}
 
