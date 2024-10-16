@@ -45,7 +45,21 @@ INSERT INTO categoria (categoria_id, nombre) VALUES (2, 'Corte Laser');
 INSERT INTO categoria (categoria_id, nombre) VALUES (3, 'Impresion');
 
 -- Creación de maquinas
-INSERT INTO maquina (maquina_id, nombre, codigo_maquina, fecha_compra, precio, codigo_upeu, estado, porc_desperdicio, tipo_cotizacion, categoria_id) VALUES (1, 'Maquina1', 'ASG41', '2024-08-20', 5500.20, '124512', 1, 20.2, '', 1);
-INSERT INTO maquina (maquina_id, nombre, codigo_maquina, fecha_compra, precio, codigo_upeu, estado, porc_desperdicio, tipo_cotizacion, categoria_id) VALUES (2, 'Maquina2', 'QWE452', '2024-08-20', 6500.20, '124513', 1, 20.2, '', 2);
-INSERT INTO maquina (maquina_id, nombre, codigo_maquina, fecha_compra, precio, codigo_upeu, estado, porc_desperdicio, tipo_cotizacion, categoria_id) VALUES (3, 'Maquina3', 'DFG10', '2024-08-20', 7500.20, '124514', 1, 20.2, '', 3);
+INSERT INTO maquina (maquina_id, nombre, fecha_compra, precio, codigo_upeu, estado, porc_desperdicio, tipo_cotizacion, activo, categoria_id) VALUES (1, 'Maquina1', '2024-08-20', 5500.20, '124512', 'activo', 20.2, '', 1, 1);
+INSERT INTO maquina (maquina_id, nombre,  fecha_compra, precio, codigo_upeu, estado, porc_desperdicio, tipo_cotizacion, activo, categoria_id) VALUES (2, 'Maquina2', '2024-08-20', 6500.20, '124513', 'activo', 20.2, '', 1, 2);
+INSERT INTO maquina (maquina_id, nombre, fecha_compra, precio, codigo_upeu, estado, porc_desperdicio, tipo_cotizacion, activo, categoria_id) VALUES (3, 'Maquina3', '2024-08-20', 7500.20, '124514', 'activo', 20.2, '', 1, 3);
 
+-- Creación de Marca
+INSERT INTO marca (marca_id, activo, nombre) VALUES (1, 1, 'Ranger');
+INSERT INTO marca (marca_id, activo, nombre) VALUES (2, 1, 'Celtic');
+INSERT INTO marca (marca_id, activo, nombre) VALUES (3, 0, 'Glasgow');
+
+-- Creación de Insumo
+INSERT INTO insumo (insumo_id, activo, descripcion, dimension, div_unidad, nombre, observacion, precio_venta, categoria_id, marca_id) VALUES (1, 1,'','','','Papel','',30.5, 1,1);
+INSERT INTO insumo (insumo_id, activo, descripcion, dimension, div_unidad, nombre, observacion, precio_venta, categoria_id, marca_id) VALUES (2, 1,'','','','Carton','',40.5, 1,1);
+INSERT INTO insumo (insumo_id, activo, descripcion, dimension, div_unidad, nombre, observacion, precio_venta, categoria_id, marca_id) VALUES (3, 1,'','','','Madera','',50.5, 1,1);
+
+-- Creación de Materiales
+INSERT INTO material (material_id, activo, cantidad, codigo_upeu, nombre) VALUES (1, 1, 50, 'DFD32', 'Guincha');
+INSERT INTO material (material_id, activo, cantidad, codigo_upeu, nombre) VALUES (2, 1, 10, 'SXC12', 'Dron');
+INSERT INTO material (material_id, activo, cantidad, codigo_upeu, nombre) VALUES (3, 1, 50, 'LKJ55', 'Tijera');

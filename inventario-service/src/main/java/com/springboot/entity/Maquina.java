@@ -26,31 +26,33 @@ public class Maquina {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int maquina_id;
 	private String nombre;
-	private String codigo_maquina;
 	private Date fecha_compra;
 	private double precio;
 	private String codigo_upeu;
-	private Boolean estado;
+	private String estado;
 	private double porc_desperdicio;
 	private String tipo_cotizacion;
+	private Boolean activo;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "categoria_id")
 	private Categoria categoria;
 
-	public Maquina(String nombre, String codigo_maquina, Date fecha_compra, double precio, String codigo_upeu,
-			Boolean estado, double porc_desperdicio, String tipo_cotizacion, Categoria categoria) {
+	public Maquina(String nombre, Date fecha_compra, double precio, String codigo_upeu, String estado,
+			double porc_desperdicio, String tipo_cotizacion, Boolean activo, Categoria categoria) {
 		
 		this.nombre = nombre;
-		this.codigo_maquina = codigo_maquina;
 		this.fecha_compra = fecha_compra;
 		this.precio = precio;
 		this.codigo_upeu = codigo_upeu;
 		this.estado = estado;
 		this.porc_desperdicio = porc_desperdicio;
 		this.tipo_cotizacion = tipo_cotizacion;
+		this.activo = activo;
 		this.categoria = categoria;
 	}
+
+	
 
 	
 	
