@@ -108,9 +108,9 @@ public class UsuarioController {
 		boolean esValido = usuarioService.validarUsuario(usuarioDTO.getUsername(), usuarioDTO.getPassword());
 
 		if (esValido) {
-			return new ResponseEntity<>("Login exitoso, entra gaaa", HttpStatus.OK);
+			return new ResponseEntity<>("Login exitoso!!", HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>("Credenciales incorrectas, piensa pe chato", HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<>("¡¡¡ Credenciales incorrectas !!!", HttpStatus.UNAUTHORIZED);
 		}
 	}
 
