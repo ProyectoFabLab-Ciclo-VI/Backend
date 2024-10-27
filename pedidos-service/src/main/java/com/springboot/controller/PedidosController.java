@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -166,5 +167,11 @@ public class PedidosController {
 		} catch (Exception e) {
 			return new ResponseEntity("ERROR AL ACTUALIZAR EL MODELO", HttpStatus.BAD_REQUEST);
 		}
+	}
+	
+	@DeleteMapping("delete/modelo/{id}")
+	public ResponseEntity<?> deleteModelo (@PathVariable ("id") int id){
+		modelo_predefinidoService.delete(id);
+		return new ResponseEntity<> ("Modelo predefinido eliminado", HttpStatus.OK);
 	}
 }
