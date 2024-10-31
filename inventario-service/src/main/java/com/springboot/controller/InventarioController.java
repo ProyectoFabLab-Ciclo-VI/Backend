@@ -1,5 +1,7 @@
 package com.springboot.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,8 @@ import com.springboot.dto.MaterialDTO;
 import com.springboot.entity.Insumo;
 import com.springboot.entity.Maquina;
 import com.springboot.entity.Material;
+import com.springboot.entity.Tipo_Maquina;
+import com.springboot.repository.Tipo_MaquinaRepository;
 import com.springboot.service.InsumoService;
 import com.springboot.service.MaquinaService;
 import com.springboot.service.MaterialService;
@@ -30,6 +34,9 @@ public class InventarioController {
 
 	@Autowired
 	private MaquinaService maquinaService;
+	
+	@Autowired
+	private Tipo_MaquinaRepository tipo_MaquinaRepository;
 	
 	@Autowired
 	private InsumoService insumoService;
@@ -46,41 +53,33 @@ public class InventarioController {
 	}
 	
 	@PostMapping("/add/maquina")
-	public ResponseEntity<?> addMaquina(@RequestBody MaquinaDTO maquinaDTO){
+	public ResponseEntity<?> addMaquina(@RequestBody MaquinaDTO maquinaDTO){	
 		Maquina maquina = new Maquina(maquinaDTO.getNombre(),
-				                      maquinaDTO.getFecha_compra(),
-				                      maquinaDTO.getPrecio(),
-				                      maquinaDTO.getCodigo_upeu(),
-				                      maquinaDTO.getEstado(),
-				                      maquinaDTO.getPorc_desperdicio(),
-				                      maquinaDTO.getTipo_cotizacion(),
-				                      maquinaDTO.getActivo(),
-				                      maquinaDTO.getCategoria());
+									  maquinaDTO.getCodigo_upeu(),
+									  maquinaDTO.getEstado(),
+									  maquinaDTO.getActivo(),
+									  maquinaDTO.getTipo_maquina());
 		maquinaService.save(maquina);
-		return new ResponseEntity(maquina, HttpStatus.CREATED);
+		return new ResponseEntity<>(maquina, HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/update/maquina/{id}")
 	public ResponseEntity<?> updateMaquina(@PathVariable ("id") int id, @RequestBody MaquinaDTO maquinaDTO){
 		Maquina maquina = maquinaService.getOne(id).get();
 		maquina.setNombre(maquinaDTO.getNombre());
-		maquina.setFecha_compra(maquinaDTO.getFecha_compra());
-		maquina.setPrecio(maquinaDTO.getPrecio());
 		maquina.setCodigo_upeu(maquinaDTO.getCodigo_upeu());
 		maquina.setEstado(maquinaDTO.getEstado());
-		maquina.setPorc_desperdicio(maquinaDTO.getPorc_desperdicio());
-		maquina.setTipo_cotizacion(maquinaDTO.getTipo_cotizacion());
 		maquina.setActivo(maquinaDTO.getActivo());
-		maquina.setCategoria(maquinaDTO.getCategoria());
+		maquina.setTipo_maquina(maquinaDTO.getTipo_maquina());
 		maquinaService.save(maquina);
-		return new ResponseEntity("Máquina actualizada", HttpStatus.OK);
+		return new ResponseEntity<>("Máquina actualizada", HttpStatus.OK);
 		
 	}
 	
 	@DeleteMapping("/delete/maquina/{id}")
 	public ResponseEntity<?> deleteMaquina(@PathVariable ("id") int id){
 		maquinaService.delete(id);
-		return new ResponseEntity("Máquina Eliminada", HttpStatus.ACCEPTED);
+		return new ResponseEntity<>("Máquina Eliminada", HttpStatus.ACCEPTED);
 	}
 	
 	//Insumo CRUD
@@ -95,15 +94,11 @@ public class InventarioController {
 	public ResponseEntity<?> addInsumo(@RequestBody InsumoDTO insumoDTO){
 		Insumo insumo = new Insumo(insumoDTO.getNombre(),
 								   insumoDTO.getDescripcion(),
-								   insumoDTO.getDimension(),
-								   insumoDTO.getDiv_unidad(),
-								   insumoDTO.getPrecio_venta(),
-								   insumoDTO.getObservacion(),
+								   insumoDTO.getUnidad_medida(),
 								   insumoDTO.getActivo(),
-								   insumoDTO.getCategoria(),
 								   insumoDTO.getMarca());
 		insumoService.save(insumo);
-		return new ResponseEntity(insumo, HttpStatus.CREATED);
+		return new ResponseEntity<>(insumo, HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/update/insumo/{id}")
@@ -111,21 +106,17 @@ public class InventarioController {
 		Insumo insumo = insumoService.getOne(id).get();
 		insumo.setNombre(insumoDTO.getNombre());
 		insumo.setDescripcion(insumoDTO.getDescripcion());
-		insumo.setDimension(insumoDTO.getDimension());
-		insumo.setDiv_unidad(insumoDTO.getDiv_unidad());
-		insumo.setPrecio_venta(insumoDTO.getPrecio_venta());
-		insumo.setObservacion(insumoDTO.getObservacion());
+		insumo.setUnidad_medida(insumoDTO.getUnidad_medida());
 		insumo.setActivo(insumoDTO.getActivo());
-		insumo.setCategoria(insumoDTO.getCategoria());
 		insumo.setMarca(insumoDTO.getMarca());
 		insumoService.save(insumo);
-		return new ResponseEntity("Insumo actualizado", HttpStatus.OK);		
+		return new ResponseEntity<>("Insumo actualizado", HttpStatus.OK);		
 	}
 	
 	@DeleteMapping("/delete/insumo/{id}")
 	public ResponseEntity<?> deleteInsumo(@PathVariable ("id") int id){
 		insumoService.delete(id);
-		return new ResponseEntity("Insumo Eliminado", HttpStatus.ACCEPTED);
+		return new ResponseEntity<>("Insumo Eliminado", HttpStatus.ACCEPTED);
 	}
 	
 	//CRUD Material
@@ -143,7 +134,7 @@ public class InventarioController {
 										 materialDTO.getCodigo_upeu(),
 										 materialDTO.getActivo());
 		materialService.save(material);
-		return new ResponseEntity(material, HttpStatus.CREATED);
+		return new ResponseEntity<>(material, HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/update/material/{id}")
@@ -155,12 +146,13 @@ public class InventarioController {
 		material.setActivo(materialDTO.getActivo());
 		
 		materialService.save(material);
-		return new ResponseEntity("Material actualizado", HttpStatus.OK);		
+		return new ResponseEntity<>("Material actualizado", HttpStatus.OK);		
 	}
 	
 	@DeleteMapping("/delete/material/{id}")
 	public ResponseEntity<?> deleteMaterial (@PathVariable ("id") int id){
 		materialService.delete(id);
-		return new ResponseEntity("Material eliminado", HttpStatus.ACCEPTED);
+		return new ResponseEntity<>("Material eliminado", HttpStatus.ACCEPTED);
 	}
+	
 }

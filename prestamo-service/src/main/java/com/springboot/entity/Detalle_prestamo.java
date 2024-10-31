@@ -15,33 +15,31 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "insumo")
-public class Insumo {
- 
+@Table(name = "detalle_prestamo")
+public class Detalle_prestamo {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int insumo_id;
-	private String nombre;
-	private String descripcion;
-	private String unidad_medida;
-	private Boolean activo;
+	private int detalle_prestamo_id;
+	private int cantidad;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "marca_id")
-	private Marca marca;
-
-	public Insumo(String nombre, String descripcion, String unidad_medida, Boolean activo, Marca marca) {
-		
-		this.nombre = nombre;
-		this.descripcion = descripcion;
-		this.unidad_medida = unidad_medida;
-		this.activo = activo;
-		this.marca = marca;
-	}
+	@JoinColumn(name = "material_id")
+	private Material material;
 	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "prestamo_id")
+	private Prestamo prestamo;
+
+	public Detalle_prestamo(int cantidad, Material material, Prestamo prestamo) {
+		
+		this.cantidad = cantidad;
+		this.material = material;
+		this.prestamo = prestamo;
+	}
 	
 	
 }
