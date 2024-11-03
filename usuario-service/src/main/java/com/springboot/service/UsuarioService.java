@@ -79,4 +79,10 @@ public class UsuarioService {
 		helper.setText(body, true); //true para indicar que el contenido es HTML
 		mailSender.send(message);
 	}
+	
+	//Este método sirve para buscar el email de una persona
+	 public Usuario findByEmail(String email) {
+	        return usuarioRepository.findByPersonaEmail(email);
+	    }
+	
 }
