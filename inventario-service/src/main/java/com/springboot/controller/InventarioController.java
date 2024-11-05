@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,14 +18,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.springboot.dto.InsumoDTO;
+import com.springboot.dto.MantenimientoDTO;
 import com.springboot.dto.MaquinaDTO;
 import com.springboot.dto.MaterialDTO;
 import com.springboot.entity.Insumo;
+import com.springboot.entity.Mantenimiento;
 import com.springboot.entity.Maquina;
 import com.springboot.entity.Material;
 import com.springboot.entity.Tipo_Maquina;
 import com.springboot.repository.Tipo_MaquinaRepository;
 import com.springboot.service.InsumoService;
+import com.springboot.service.MantenimientoService;
 import com.springboot.service.MaquinaService;
 import com.springboot.service.MaterialService;
 
@@ -36,7 +40,7 @@ public class InventarioController {
 	private MaquinaService maquinaService;
 	
 	@Autowired
-	private Tipo_MaquinaRepository tipo_MaquinaRepository;
+	private MantenimientoService mantenimientoService;
 	
 	@Autowired
 	private InsumoService insumoService;
@@ -56,9 +60,9 @@ public class InventarioController {
 	public ResponseEntity<?> addMaquina(@RequestBody MaquinaDTO maquinaDTO){	
 		Maquina maquina = new Maquina(maquinaDTO.getNombre(),
 									  maquinaDTO.getCodigo_upeu(),
-									  maquinaDTO.getEstado(),
 									  maquinaDTO.getActivo(),
-									  maquinaDTO.getTipo_maquina());
+									  maquinaDTO.getTipo_maquina(),
+									  maquinaDTO.getEstado_maquina());
 		maquinaService.save(maquina);
 		return new ResponseEntity<>(maquina, HttpStatus.CREATED);
 	}
@@ -68,9 +72,9 @@ public class InventarioController {
 		Maquina maquina = maquinaService.getOne(id).get();
 		maquina.setNombre(maquinaDTO.getNombre());
 		maquina.setCodigo_upeu(maquinaDTO.getCodigo_upeu());
-		maquina.setEstado(maquinaDTO.getEstado());
 		maquina.setActivo(maquinaDTO.getActivo());
 		maquina.setTipo_maquina(maquinaDTO.getTipo_maquina());
+		maquina.setEstado_maquina(maquinaDTO.getEstado_maquina());
 		maquinaService.save(maquina);
 		return new ResponseEntity<>("Máquina actualizada", HttpStatus.OK);
 		
@@ -85,7 +89,7 @@ public class InventarioController {
 	//Insumo CRUD
 	@GetMapping("/list/insumo")
 	public ResponseEntity<Page<Insumo>> getInsumos (@RequestParam int page,
-													  @RequestParam int size){
+													@RequestParam int size){
 		Page<Insumo> listInsumo = insumoService.getAllInsumos(page, size);
 		return new ResponseEntity<>(listInsumo, HttpStatus.OK);
 	}
@@ -119,7 +123,7 @@ public class InventarioController {
 		return new ResponseEntity<>("Insumo Eliminado", HttpStatus.ACCEPTED);
 	}
 	
-	//CRUD Material
+	//Material CRUD
 	@GetMapping("/list/material")
 	public ResponseEntity<Page<Material>> getMateriales (@RequestParam int page,
 													  	 @RequestParam int size){
@@ -153,6 +157,41 @@ public class InventarioController {
 	public ResponseEntity<?> deleteMaterial (@PathVariable ("id") int id){
 		materialService.delete(id);
 		return new ResponseEntity<>("Material eliminado", HttpStatus.ACCEPTED);
+	}
+	
+	//Mantenimiento CRUD
+	@GetMapping("/list/mantenimiento")
+	public ResponseEntity<Page<Mantenimiento>> getMantenimientos (@RequestParam int page,
+																  @RequestParam int size){
+		Page<Mantenimiento> listMantenimiento = mantenimientoService.getAllMantenimientos(page, size);
+		return new ResponseEntity<>(listMantenimiento, HttpStatus.OK);
+	}
+	
+	@PostMapping("/add/mantenimiento")
+	public ResponseEntity<?> addMantenimiento (@RequestBody MantenimientoDTO mantenimientoDTO){
+		Mantenimiento mantenimiento = new Mantenimiento(mantenimientoDTO.getFecha_prevista(),
+														mantenimientoDTO.getFecha_mantenimiento(),
+														mantenimientoDTO.getCosto(),
+														mantenimientoDTO.getMaquina());
+		mantenimientoService.save(mantenimiento);
+		return new ResponseEntity<>(mantenimiento, HttpStatus.CREATED);
+	}
+	
+	@PutMapping("/update/mantenimiento/{id}")
+	public ResponseEntity<?> updateMantenimiento (@PathVariable ("id") int id, @RequestBody MantenimientoDTO mantenimientoDTO){
+		Mantenimiento mantenimiento = mantenimientoService.getOne(id).get();
+		mantenimiento.setFecha_prevista(mantenimientoDTO.getFecha_prevista());
+		mantenimiento.setFecha_mantenimiento(mantenimientoDTO.getFecha_mantenimiento());
+		mantenimiento.setCosto(mantenimientoDTO.getCosto());
+		mantenimiento.setMaquina(mantenimientoDTO.getMaquina());
+		mantenimientoService.save(mantenimiento);
+		return new ResponseEntity<>("Mantenimiento actualizado", HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/delete/mantenimiento/{id}")
+	public ResponseEntity<?> deleteMantenimiento (@PathVariable ("id") int id){
+		mantenimientoService.delete(id);
+		return new ResponseEntity<>("Mantenimiento eliminado", HttpStatus.OK);
 	}
 	
 }

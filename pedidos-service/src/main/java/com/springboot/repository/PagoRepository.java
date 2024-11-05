@@ -4,9 +4,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.springboot.entity.Maquina;
+import com.springboot.entity.Pago;
 
-public interface MaquinaRepository extends JpaRepository<Maquina, Integer>{
+public interface PagoRepository extends JpaRepository<Pago, Integer>{
 
-	Page<Maquina> findAll (Pageable pageable);
+	Page<Pago> findAll (Pageable pageable);
 }
