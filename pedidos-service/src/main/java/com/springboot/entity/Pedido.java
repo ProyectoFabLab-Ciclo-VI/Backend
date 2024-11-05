@@ -1,6 +1,7 @@
 package com.springboot.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -8,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -36,5 +38,9 @@ public class Pedido {
 	@OneToOne(mappedBy = "pedido")
 	@JsonIgnore
 	private Pago pago;
+	
+	@OneToMany(mappedBy = "pedido")
+	@JsonIgnore
+	private List<Insumo_Pedido> insumo_pedido;
 	
 }

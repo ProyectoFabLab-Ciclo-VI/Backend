@@ -21,16 +21,19 @@ import com.springboot.dto.InsumoDTO;
 import com.springboot.dto.MantenimientoDTO;
 import com.springboot.dto.MaquinaDTO;
 import com.springboot.dto.MaterialDTO;
+import com.springboot.dto.Seguimiento_InsumoDTO;
 import com.springboot.entity.Insumo;
 import com.springboot.entity.Mantenimiento;
 import com.springboot.entity.Maquina;
 import com.springboot.entity.Material;
+import com.springboot.entity.Seguimiento_Insumo;
 import com.springboot.entity.Tipo_Maquina;
 import com.springboot.repository.Tipo_MaquinaRepository;
 import com.springboot.service.InsumoService;
 import com.springboot.service.MantenimientoService;
 import com.springboot.service.MaquinaService;
 import com.springboot.service.MaterialService;
+import com.springboot.service.Seguimiento_InsumoService;
 
 @RestController
 @RequestMapping("/apiinventario")
@@ -47,6 +50,9 @@ public class InventarioController {
 	
 	@Autowired
 	private MaterialService materialService;
+	
+	@Autowired
+	private Seguimiento_InsumoService seguimiento_InsumoService;
 	
 	//Maquina CRUD
 	@GetMapping("/list/maquina")
@@ -194,4 +200,39 @@ public class InventarioController {
 		return new ResponseEntity<>("Mantenimiento eliminado", HttpStatus.OK);
 	}
 	
+	
+	//CRUD Seguimiento_Insumo
+	@GetMapping("/list/seguimiento-insumo")
+	public ResponseEntity<Page<Seguimiento_Insumo>> getSeguimientoInsumos (@RequestParam int page,
+																		   @RequestParam int size){
+		Page<Seguimiento_Insumo> listSeguimientoInsumos = seguimiento_InsumoService.getAllSeguimientoInsumos(page, size);
+		return new ResponseEntity<> (listSeguimientoInsumos, HttpStatus.OK);
+	}
+	
+	@PostMapping("/add/seguimiento-insumo")
+	public ResponseEntity<?> addSeguimientoInsumo (@RequestBody Seguimiento_InsumoDTO seguimiento_InsumoDTO){
+		Seguimiento_Insumo seguimiento_Insumo = new Seguimiento_Insumo(seguimiento_InsumoDTO.getFecha_compra(),
+																	   seguimiento_InsumoDTO.getCantidad_compra(),
+																	   seguimiento_InsumoDTO.getValidado(),
+																	   seguimiento_InsumoDTO.getInsumo());
+		seguimiento_InsumoService.save(seguimiento_Insumo);
+		return new ResponseEntity<>(seguimiento_Insumo, HttpStatus.CREATED);
+	}
+	
+	@PutMapping("/update/seguimiento-insumo/{id}")
+	public ResponseEntity<?> updateSeguimientoInsumo (@PathVariable ("id") int id, @RequestBody Seguimiento_InsumoDTO seguimiento_InsumoDTO){
+		Seguimiento_Insumo seguimiento_Insumo = seguimiento_InsumoService.getOne(id).get();
+		seguimiento_Insumo.setFecha_compra(seguimiento_InsumoDTO.getFecha_compra());
+		seguimiento_Insumo.setCantidad_compra(seguimiento_InsumoDTO.getCantidad_compra());
+		seguimiento_Insumo.setValidado(seguimiento_InsumoDTO.getValidado());
+		seguimiento_Insumo.setInsumo(seguimiento_InsumoDTO.getInsumo());
+		seguimiento_InsumoService.save(seguimiento_Insumo);
+		return new ResponseEntity<>("Seguimiento-Insumo actualizado", HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/delete/seguimiento-insumo/{id}")
+	public ResponseEntity<?> deleteSeguimientoInsumo (@PathVariable ("id") int id){
+		seguimiento_InsumoService.delete(id);
+		return new ResponseEntity<>("Seguimiento-Insumo eliminado", HttpStatus.OK);
+	}
 }

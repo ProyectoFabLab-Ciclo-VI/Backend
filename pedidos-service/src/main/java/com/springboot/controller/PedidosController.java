@@ -21,13 +21,17 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.springboot.dto.Insumo_PedidoDTO;
 import com.springboot.dto.Modelo_predefinidoDTO;
+import com.springboot.entity.Insumo_Pedido;
 import com.springboot.entity.Modelo_Predefinido;
+import com.springboot.service.Insumo_PedidoService;
 import com.springboot.service.Modelo_predefinidoService;
 
 import org.springframework.core.io.Resource;
@@ -39,6 +43,9 @@ public class PedidosController {
 
 	@Autowired
 	private Modelo_predefinidoService modelo_predefinidoService;
+	
+	@Autowired
+	private Insumo_PedidoService insumo_PedidoService;
 
 	@Value("${file.upload-dir}")
 	private String directorio;
@@ -173,5 +180,22 @@ public class PedidosController {
 	public ResponseEntity<?> deleteModelo (@PathVariable ("id") int id){
 		modelo_predefinidoService.delete(id);
 		return new ResponseEntity<> ("Modelo predefinido eliminado", HttpStatus.OK);
+	}
+	
+	//CRUD Insumo_Pedido
+	@GetMapping("/list/insumo-pedido")
+	public ResponseEntity<Page<Insumo_Pedido>> getInsumoPedidos(@RequestParam int page,
+																@RequestParam int size){
+		Page<Insumo_Pedido> listInsumoPedidos = insumo_PedidoService.getAllInsumosPedidos(page, size);
+		return new ResponseEntity<>(listInsumoPedidos, HttpStatus.OK);
+	}
+	
+	@PostMapping("/add/insumo-pedido")
+	public ResponseEntity<?> addInsumoPedido (@RequestBody Insumo_PedidoDTO insumo_PedidoDTO){
+		Insumo_Pedido insumo_Pedido = new Insumo_Pedido(insumo_PedidoDTO.getCantidad_usada(),
+														insumo_PedidoDTO.getPedido(),
+														insumo_PedidoDTO.getInsumo());
+		insumo_PedidoService.save(insumo_Pedido);
+		return new ResponseEntity<>(insumo_Pedido, HttpStatus.CREATED);
 	}
 }
