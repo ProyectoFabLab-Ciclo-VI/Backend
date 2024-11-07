@@ -1,10 +1,13 @@
 package com.springboot.entity;
 
+import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,26 +17,23 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Entity
-@Table(name = "insumo")
-public class Insumo {
+@Table(name = "persona")
+public class Persona {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int insumo_id;
+	private int persona_id;
 	private String nombre;
-	private String descripcion;
-	private String unidad_medida;
-	private Boolean activo;
+	private String apellido;
+	private Date fecha_nacimiento;
+	private String codigo;
+	private String email;
 	
-	@OneToMany(mappedBy = "insumo")
+	@OneToMany(mappedBy = "persona", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JsonIgnore
-	private List<Insumo_Pedido> insumo_pedido;
-	
-	@OneToMany(mappedBy = "insumo")
-	@JsonIgnore
-	private List<Tarifario> tarifario;
+	private List<Pedido> pedido;
 }

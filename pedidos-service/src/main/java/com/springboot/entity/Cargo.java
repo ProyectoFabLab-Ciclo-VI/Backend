@@ -8,32 +8,25 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Entity
-@Table(name = "insumo")
-public class Insumo {
+@Table(name = "cargo")
+public class Cargo {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int insumo_id;
+	private int cargo_id;
 	private String nombre;
-	private String descripcion;
-	private String unidad_medida;
-	private Boolean activo;
 	
-	@OneToMany(mappedBy = "insumo")
+	@OneToOne(mappedBy = "cargo")
 	@JsonIgnore
-	private List<Insumo_Pedido> insumo_pedido;
-	
-	@OneToMany(mappedBy = "insumo")
-	@JsonIgnore
-	private List<Tarifario> tarifario;
+	private Configuracion_Cargo configuracion_cargo;
 }

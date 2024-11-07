@@ -35,7 +35,7 @@ public class Insumo {
 	private String unidad_medida;
 	private Boolean activo;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "marca_id")
 	private Marca marca;
 

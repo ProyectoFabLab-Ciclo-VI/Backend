@@ -29,10 +29,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.springboot.dto.Insumo_PedidoDTO;
 import com.springboot.dto.Modelo_predefinidoDTO;
+import com.springboot.dto.PresupuestoDTO;
+import com.springboot.dto.TarifarioDTO;
 import com.springboot.entity.Insumo_Pedido;
 import com.springboot.entity.Modelo_Predefinido;
+import com.springboot.entity.Presupuesto;
+import com.springboot.entity.Tarifario;
 import com.springboot.service.Insumo_PedidoService;
 import com.springboot.service.Modelo_predefinidoService;
+import com.springboot.service.PresupuestoService;
+import com.springboot.service.TarifarioService;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -46,6 +52,12 @@ public class PedidosController {
 	
 	@Autowired
 	private Insumo_PedidoService insumo_PedidoService;
+	
+	@Autowired
+	private PresupuestoService presupuestoService;
+	
+	@Autowired
+	private TarifarioService tarifarioService;
 
 	@Value("${file.upload-dir}")
 	private String directorio;
@@ -197,5 +209,89 @@ public class PedidosController {
 														insumo_PedidoDTO.getInsumo());
 		insumo_PedidoService.save(insumo_Pedido);
 		return new ResponseEntity<>(insumo_Pedido, HttpStatus.CREATED);
+	}
+	@PutMapping("/update/insumo-pedido/{id}")
+	public ResponseEntity<?> updateInsumoPedido (@PathVariable ("id") int id, @RequestBody Insumo_PedidoDTO insumo_PedidoDTO){
+		Insumo_Pedido insumo_Pedido = insumo_PedidoService.getOne(id).get();
+		insumo_Pedido.setCantidad_usada(insumo_PedidoDTO.getCantidad_usada());
+		insumo_Pedido.setPedido(insumo_PedidoDTO.getPedido());
+		insumo_Pedido.setInsumo(insumo_PedidoDTO.getInsumo());
+		insumo_PedidoService.save(insumo_Pedido);
+		return new ResponseEntity<>("Insumo - pedido actualizado", HttpStatus.OK);
+	}
+	
+	//CRUD Presupuesto
+	@GetMapping("/list/presupuesto")
+	public ResponseEntity<Page<Presupuesto>> getPresupuestos (@RequestParam int page,
+															  @RequestParam int size){
+		Page<Presupuesto> listPresupuesto = presupuestoService.getAllPresupuestos(page, size);
+		return new ResponseEntity<>(listPresupuesto, HttpStatus.OK);
+	}
+	
+	@PostMapping("/add/presupuesto")
+	public ResponseEntity<?> addPresupuesto (@RequestBody PresupuestoDTO presupuestoDTO){
+		Presupuesto presupuesto = new Presupuesto(presupuestoDTO.getCantidad_empleada(),
+												  presupuestoDTO.getMonto_mano_obra(),
+												  presupuestoDTO.getPrecio_total(),
+												  presupuestoDTO.getConfiguracion_cargo(),
+												  presupuestoDTO.getConfiguracion_tiempo(),
+												  presupuestoDTO.getTarifario());
+		presupuestoService.save(presupuesto);
+		return new ResponseEntity<>(presupuesto, HttpStatus.CREATED);
+	}
+	
+	@PutMapping("/update/presupuesto/{id}")
+	public ResponseEntity<?> updatePresupuesto (@PathVariable ("id") int id, @RequestBody PresupuestoDTO presupuestoDTO){
+		Presupuesto presupuesto = presupuestoService.getOne(id).get();
+		presupuesto.setCantidad_empleada(presupuestoDTO.getCantidad_empleada());
+		presupuesto.setMonto_mano_obra(presupuestoDTO.getMonto_mano_obra());
+		presupuesto.setPrecio_total(presupuestoDTO.getPrecio_total());
+		presupuesto.setConfiguracion_cargo(presupuestoDTO.getConfiguracion_cargo());
+		presupuesto.setConfiguracion_tiempo(presupuestoDTO.getConfiguracion_tiempo());
+		presupuesto.setTarifario(presupuestoDTO.getTarifario());
+		presupuestoService.save(presupuesto);
+		return new ResponseEntity<>("Presupuesto Actualizado", HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/delete/presupuesto/{id}")
+	public ResponseEntity<?> deletePresupuesto (@PathVariable ("id") int id){
+		presupuestoService.delete(id);
+		return new ResponseEntity<>("Presupuesto elimnado" , HttpStatus.OK);
+	}
+	
+	//CRUD Tarifario
+	@GetMapping("/list/tarifario")
+	public ResponseEntity<Page<Tarifario>> getTarifarios (@RequestParam int page,
+														  @RequestParam int size){
+		Page<Tarifario> listTarifario = tarifarioService.getAllTarifarios(page, size);
+		return new ResponseEntity<>(listTarifario, HttpStatus.OK);
+	}
+	
+	@PostMapping("/add/tarifario")
+	public ResponseEntity<?> addTarifario  (@RequestBody TarifarioDTO tarifarioDTO){
+		Tarifario tarifario = new Tarifario(tarifarioDTO.getPrecio_venta(),
+											tarifarioDTO.getPorcentaje_desperdicio(),
+											tarifarioDTO.getInsumo(),
+											tarifarioDTO.getMaquina());
+		tarifarioService.save(tarifario);
+		return new ResponseEntity<>(tarifario, HttpStatus.CREATED);
+	}
+	
+	@PutMapping("/update/tarifario/{id}")
+	public ResponseEntity<?> updateTarifario (@PathVariable ("id") int id, @RequestBody TarifarioDTO tarifarioDTO){
+		Tarifario tarifario = tarifarioService.getOne(id).get();
+		tarifario.setPrecio_venta(tarifarioDTO.getPrecio_venta());
+		tarifario.setPorcentaje_desperdicio(tarifarioDTO.getPorcentaje_desperdicio());
+		tarifario.setInsumo(tarifarioDTO.getInsumo());
+		tarifario.setMaquina(tarifarioDTO.getMaquina());
+		tarifarioService.save(tarifario);
+		return new ResponseEntity<>("Tarifario actualizado", HttpStatus.OK);
+		
+	}
+	
+	@DeleteMapping("/delete/tarifario/{id}")
+	public ResponseEntity<?> deleteTarifario (@PathVariable ("id") int id){
+		tarifarioService.delete(id);
+		return new ResponseEntity<>("Tarifario eliminado", HttpStatus.OK);
 	}
 }

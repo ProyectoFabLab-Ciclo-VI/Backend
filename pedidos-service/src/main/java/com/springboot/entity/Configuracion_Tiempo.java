@@ -8,7 +8,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,22 +20,26 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "insumo")
-public class Insumo {
+@Table(name = "configuracion_tiempo")
+public class Configuracion_Tiempo {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int insumo_id;
-	private String nombre;
-	private String descripcion;
-	private String unidad_medida;
-	private Boolean activo;
+	private int configuracion_tiempo_id;
+	private double precioxminuto;
 	
-	@OneToMany(mappedBy = "insumo")
-	@JsonIgnore
-	private List<Insumo_Pedido> insumo_pedido;
+	@OneToOne
+	@JoinColumn(name = "maquina_id")
+	private Maquina maquina;
 	
-	@OneToMany(mappedBy = "insumo")
+	@OneToMany(mappedBy = "configuracion_tiempo")
 	@JsonIgnore
-	private List<Tarifario> tarifario;
+	private List<Presupuesto> presupuesto;
+
+	public Configuracion_Tiempo(double precioxminuto, Maquina maquina) {
+		
+		this.precioxminuto = precioxminuto;
+		this.maquina = maquina;
+	}
+	
 }

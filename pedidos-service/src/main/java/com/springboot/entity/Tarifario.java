@@ -1,6 +1,5 @@
 package com.springboot.entity;
 
-import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -14,45 +13,44 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 @Entity
-@Table(name = "pedido")
-public class Pedido {
+@Table(name = "tarifario")
+public class Tarifario {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int pedido_id;
-	private String url_modelo;
-	private Date fecha_pedido;
-	private Date fecha_validacion;
-	private String comentario;
-	private String estado;
-	private String codigo;
+	private int tarifario_id;
 	private double precio_venta;
-	private Date fecha_pago;
+	private double porcentaje_desperdicio;
 	
-	@OneToOne(mappedBy = "pedido")
+	@OneToMany(mappedBy = "tarifario", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JsonIgnore
-	private Pago pago;
+	private List<Presupuesto> presupuesto;
 	
-	@OneToMany(mappedBy = "pedido", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JsonIgnore
-	private List<Insumo_Pedido> insumo_pedido;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "insumo_id")
+	private Insumo insumo;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "maquina_id")
 	private Maquina maquina;
+
+	public Tarifario(double precio_venta, double porcentaje_desperdicio, Insumo insumo, Maquina maquina) {
+		
+		this.precio_venta = precio_venta;
+		this.porcentaje_desperdicio = porcentaje_desperdicio;
+		this.insumo = insumo;
+		this.maquina = maquina;
+	}
 	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "persona_id")
-	private Persona persona;
+	
 	
 }
