@@ -1,9 +1,14 @@
 package com.springboot.entity;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,4 +29,8 @@ public class Modelo_Predefinido {
 	private String comentario;
 	private double precio;
 	private String imagen;
+	
+	@OneToMany(mappedBy = "modelo_predefinido")
+	@JsonIgnore
+	private List<Pedido> pedido;
 }
