@@ -31,17 +31,18 @@ import com.springboot.dto.Insumo_PedidoDTO;
 import com.springboot.dto.Modelo_predefinidoDTO;
 import com.springboot.dto.PedidoDTO;
 import com.springboot.dto.PresupuestoDTO;
-import com.springboot.dto.TarifarioDTO;
 import com.springboot.entity.Insumo_Pedido;
 import com.springboot.entity.Modelo_Predefinido;
 import com.springboot.entity.Pedido;
+import com.springboot.entity.Persona;
 import com.springboot.entity.Presupuesto;
-import com.springboot.entity.Tarifario;
+import com.springboot.repository.Modelo_predefinidoRepository;
+import com.springboot.repository.PersonaRepository;
+import com.springboot.repository.PresupuestoRepository;
 import com.springboot.service.Insumo_PedidoService;
 import com.springboot.service.Modelo_predefinidoService;
 import com.springboot.service.PedidoService;
 import com.springboot.service.PresupuestoService;
-import com.springboot.service.TarifarioService;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -60,10 +61,14 @@ public class PedidosController {
 	private PresupuestoService presupuestoService;
 
 	@Autowired
-	private TarifarioService tarifarioService;
-
-	@Autowired
 	private PedidoService pedidoService;
+	
+	@Autowired
+	private PersonaRepository personaRepository;
+	@Autowired
+	private Modelo_predefinidoRepository modelo_predefinidoRepository;
+	@Autowired
+	private PresupuestoRepository presupuestoRepository;
 
 	@Value("${file.upload-dir}")
 	private String directorio;
@@ -87,26 +92,61 @@ public class PedidosController {
 	public ResponseEntity<?> addPedido(@ModelAttribute PedidoDTO pedidoDTO) {
 
 		try {
-			// Guardamos la imagen de la imagen por pedido y obtenemos la ruta
-			String urlModeloPedido = guardarImagenPedido(pedidoDTO.getUrl_modelo());
-
+			//Verificamos si URL de la imagen esta presente, sino le asignamos nulo.
+			//Esto es para casos que realice un pedido sin imagen, y la imagen sea de un modelo predefinido
+			String urlModeloPedido = null;
+			if (pedidoDTO.getUrl_modelo() != null && !pedidoDTO.getUrl_modelo().isEmpty()) {
+				urlModeloPedido = guardarImagenPedido(pedidoDTO.getUrl_modelo());
+			}
 			// Creamos un pedido y le asignamos la ruta del archivo
 			Pedido pedido = new Pedido();
-			pedido.setUrl_modelo(urlModeloPedido);
+			if (urlModeloPedido != null) {
+				pedido.setUrl_modelo(urlModeloPedido);
+			}	
 			pedido.setFecha_pedido(pedidoDTO.getFecha_pedido());
 			pedido.setFecha_validacion(pedidoDTO.getFecha_validacion());
 			pedido.setComentario(pedidoDTO.getComentario());
 			pedido.setEstado(pedidoDTO.getEstado());
 			pedido.setCodigo(pedidoDTO.getCodigo());
-			pedido.setPrecio_venta(pedidoDTO.getPrecio_venta());
 			pedido.setFecha_pago(pedidoDTO.getFecha_pago());
-			pedido.setMaquina(pedidoDTO.getMaquina());
-			pedido.setPersona(pedidoDTO.getPersona());
-			pedido.setModelo_predefinido(pedidoDTO.getModelo_predefinido());
+			//pedido.setPersona(pedidoDTO.getPersona());
+			//pedido.setModelo_predefinido(pedidoDTO.getModelo_predefinido());
+			//pedido.setPresupuesto(pedidoDTO.getPresupuesto());
+			
+			// Buscamos las entidades relaciones usando los IDs solo si no son null
+	        Persona persona = null;
+	        if (pedidoDTO.getPersona_id() != null) {
+	            persona = personaRepository.findById(pedidoDTO.getPersona_id()).orElse(null);
+	        }
+
+	        Modelo_Predefinido modelo_Predefinido = null;
+	        if (pedidoDTO.getModelo_predefinido_id() != null) {
+	            modelo_Predefinido = modelo_predefinidoRepository.findById(pedidoDTO.getModelo_predefinido_id()).orElse(null);
+	        }
+
+	        Presupuesto presupuesto = null;
+	        if (pedidoDTO.getPresupuesto_id() != null) {
+	            presupuesto = presupuestoRepository.findById(pedidoDTO.getPresupuesto_id()).orElse(null);
+	        }
+
+	        // Asignamos las entidades si no son null
+	        if (persona != null) {
+	            pedido.setPersona(persona);
+	        }
+
+	        if (modelo_Predefinido != null) {
+	            pedido.setModelo_predefinido(modelo_Predefinido);
+	        }
+
+	        if (presupuesto != null) {
+	            pedido.setPresupuesto(presupuesto);
+	        }
+			
 			pedidoService.save(pedido);
 			return new ResponseEntity<>(pedido, HttpStatus.CREATED);
 		} catch (Exception e) {
-			return new ResponseEntity<>("ERROR AL CARGAR EL PEDIDO", HttpStatus.INTERNAL_SERVER_ERROR);
+			e.printStackTrace();
+			return new ResponseEntity<>("ERROR AL CARGAR EL PEDIDO " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 	}
@@ -192,11 +232,10 @@ public class PedidosController {
 			pedido.setComentario(pedidoDTO.getComentario());
 			pedido.setEstado(pedidoDTO.getEstado());
 			pedido.setCodigo(pedidoDTO.getCodigo());
-			pedido.setPrecio_venta(pedidoDTO.getPrecio_venta());
 			pedido.setFecha_pago(pedidoDTO.getFecha_pago());
-			pedido.setMaquina(pedidoDTO.getMaquina());
-			pedido.setPersona(pedidoDTO.getPersona());
-			pedido.setModelo_predefinido(pedidoDTO.getModelo_predefinido());
+			//pedido.setPersona(pedidoDTO.getPersona());
+			//pedido.setModelo_predefinido(pedidoDTO.getModelo_predefinido());
+			//pedido.setPresupuesto(pedidoDTO.getPresupuesto());
 			pedidoService.save(pedido);
 			return new ResponseEntity<>("Pedido actualiado", HttpStatus.OK);
 
@@ -378,10 +417,16 @@ public class PedidosController {
 
 	@PostMapping("/add/presupuesto")
 	public ResponseEntity<?> addPresupuesto(@RequestBody PresupuestoDTO presupuestoDTO) {
-		Presupuesto presupuesto = new Presupuesto(presupuestoDTO.getCantidad_empleada(),
-				presupuestoDTO.getMonto_mano_obra(), presupuestoDTO.getPrecio_total(),
-				presupuestoDTO.getConfiguracion_cargo(), presupuestoDTO.getConfiguracion_tiempo(),
-				presupuestoDTO.getTarifario());
+		Presupuesto presupuesto = new Presupuesto(presupuestoDTO.getMasa_pieza(),
+												  presupuestoDTO.getTiempo_impresion(), 
+												  presupuestoDTO.getCoste_operario(),
+												  presupuestoDTO.getPrecio_total(), 
+												  presupuestoDTO.getGanancia(),
+												  presupuestoDTO.getTasa_falla(),
+												  presupuestoDTO.getConfiguracion_cargo(),
+												  presupuestoDTO.getConfiguracion_tiempo(),
+												  presupuestoDTO.getMaquina(),
+												  presupuestoDTO.getInsumo());
 		presupuestoService.save(presupuesto);
 		return new ResponseEntity<>(presupuesto, HttpStatus.CREATED);
 	}
@@ -389,12 +434,16 @@ public class PedidosController {
 	@PutMapping("/update/presupuesto/{id}")
 	public ResponseEntity<?> updatePresupuesto(@PathVariable("id") int id, @RequestBody PresupuestoDTO presupuestoDTO) {
 		Presupuesto presupuesto = presupuestoService.getOne(id).get();
-		presupuesto.setCantidad_empleada(presupuestoDTO.getCantidad_empleada());
-		presupuesto.setMonto_mano_obra(presupuestoDTO.getMonto_mano_obra());
+		presupuesto.setMasa_pieza(presupuestoDTO.getMasa_pieza());
+		presupuesto.setTiempo_impresion(presupuestoDTO.getTiempo_impresion());
+		presupuesto.setCoste_operario(presupuestoDTO.getCoste_operario());
 		presupuesto.setPrecio_total(presupuestoDTO.getPrecio_total());
+		presupuesto.setGanancia(presupuestoDTO.getGanancia());
+		presupuesto.setTasa_falla(presupuestoDTO.getTasa_falla());
 		presupuesto.setConfiguracion_cargo(presupuestoDTO.getConfiguracion_cargo());
 		presupuesto.setConfiguracion_tiempo(presupuestoDTO.getConfiguracion_tiempo());
-		presupuesto.setTarifario(presupuestoDTO.getTarifario());
+		presupuesto.setMaquina(presupuestoDTO.getMaquina());
+		presupuesto.setInsumo(presupuestoDTO.getInsumo());
 		presupuestoService.save(presupuesto);
 		return new ResponseEntity<>("Presupuesto Actualizado", HttpStatus.OK);
 	}
@@ -403,38 +452,5 @@ public class PedidosController {
 	public ResponseEntity<?> deletePresupuesto(@PathVariable("id") int id) {
 		presupuestoService.delete(id);
 		return new ResponseEntity<>("Presupuesto elimnado", HttpStatus.OK);
-	}
-
-	// CRUD Tarifario
-	@GetMapping("/list/tarifario")
-	public ResponseEntity<Page<Tarifario>> getTarifarios(@RequestParam int page, @RequestParam int size) {
-		Page<Tarifario> listTarifario = tarifarioService.getAllTarifarios(page, size);
-		return new ResponseEntity<>(listTarifario, HttpStatus.OK);
-	}
-
-	@PostMapping("/add/tarifario")
-	public ResponseEntity<?> addTarifario(@RequestBody TarifarioDTO tarifarioDTO) {
-		Tarifario tarifario = new Tarifario(tarifarioDTO.getPrecio_venta(), tarifarioDTO.getPorcentaje_desperdicio(),
-				tarifarioDTO.getInsumo(), tarifarioDTO.getMaquina());
-		tarifarioService.save(tarifario);
-		return new ResponseEntity<>(tarifario, HttpStatus.CREATED);
-	}
-
-	@PutMapping("/update/tarifario/{id}")
-	public ResponseEntity<?> updateTarifario(@PathVariable("id") int id, @RequestBody TarifarioDTO tarifarioDTO) {
-		Tarifario tarifario = tarifarioService.getOne(id).get();
-		tarifario.setPrecio_venta(tarifarioDTO.getPrecio_venta());
-		tarifario.setPorcentaje_desperdicio(tarifarioDTO.getPorcentaje_desperdicio());
-		tarifario.setInsumo(tarifarioDTO.getInsumo());
-		tarifario.setMaquina(tarifarioDTO.getMaquina());
-		tarifarioService.save(tarifario);
-		return new ResponseEntity<>("Tarifario actualizado", HttpStatus.OK);
-
-	}
-
-	@DeleteMapping("/delete/tarifario/{id}")
-	public ResponseEntity<?> deleteTarifario(@PathVariable("id") int id) {
-		tarifarioService.delete(id);
-		return new ResponseEntity<>("Tarifario eliminado", HttpStatus.OK);
 	}
 }

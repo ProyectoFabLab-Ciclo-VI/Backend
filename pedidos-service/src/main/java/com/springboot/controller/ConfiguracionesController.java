@@ -42,8 +42,7 @@ public class ConfiguracionesController {
 	
 	@PostMapping("/add/configuracion-tiempo")
 	public ResponseEntity<?> addConfiguracionTiempo (@RequestBody Configuracion_TiempoDTO configuracion_TiempoDTO){
-		Configuracion_Tiempo configuracion_Tiempo = new Configuracion_Tiempo(configuracion_TiempoDTO.getPrecioxminuto(),
-																			 configuracion_TiempoDTO.getMaquina());
+		Configuracion_Tiempo configuracion_Tiempo = new Configuracion_Tiempo(configuracion_TiempoDTO.getPrecioxminuto());
 		configuracion_TiempoService.save(configuracion_Tiempo);
 		return new ResponseEntity<>(configuracion_Tiempo, HttpStatus.CREATED);
 	}
@@ -52,7 +51,6 @@ public class ConfiguracionesController {
 	public ResponseEntity<?> updateConfiguracionTiempo (@PathVariable ("id") int id, @RequestBody Configuracion_TiempoDTO configuracion_TiempoDTO){
 		Configuracion_Tiempo configuracion_Tiempo = configuracion_TiempoService.getOne(id).get();
 		configuracion_Tiempo.setPrecioxminuto(configuracion_TiempoDTO.getPrecioxminuto());
-		configuracion_Tiempo.setMaquina(configuracion_TiempoDTO.getMaquina());
 		configuracion_TiempoService.save(configuracion_Tiempo);
 		return new ResponseEntity<>("Configuración de Tiempo actualizado", HttpStatus.OK);
 	}

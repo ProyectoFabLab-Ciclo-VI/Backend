@@ -29,17 +29,11 @@ public class Maquina {
 	private int maquina_id;
 	private String nombre;
 	private String codigo_upeu;
+	private double coste_maquina;
+	private double coste_amortizacion;
 	private Boolean activo;
-	
-	@OneToMany(mappedBy = "maquina", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JsonIgnore
-	private List<Pedido> pedido;
 	
 	@OneToMany(mappedBy = "maquina")
 	@JsonIgnore
-	private List<Tarifario> tarifario;
-	
-	@OneToOne(mappedBy = "maquina")
-	@JsonIgnore
-	private Configuracion_Tiempo configuracion_tiempo;
+	private List<Presupuesto>  presupuesto;
 }

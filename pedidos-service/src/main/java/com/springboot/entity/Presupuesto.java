@@ -1,5 +1,7 @@
 package com.springboot.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -7,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,9 +25,12 @@ public class Presupuesto {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int presupuesto_id;
-	private int cantidad_empleada;
-	private int monto_mano_obra;
+	private int masa_pieza;
+	private int tiempo_impresion;
+	private double coste_operario;
 	private double precio_total;
+	private double ganancia;
+	private double tasa_falla;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "configuracion_cargo_id")
@@ -35,19 +41,31 @@ public class Presupuesto {
 	private Configuracion_Tiempo configuracion_tiempo;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "tarifario_id")
-	private Tarifario tarifario;
+	@JoinColumn(name = "maquina_id")
+	private Maquina maquina;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "insumo_id")
+	private Insumo insumo;
+	
+	@OneToOne(mappedBy = "presupuesto")
+	@JsonIgnore
+	private Pedido pedido;
 
-	public Presupuesto(int cantidad_empleada, int monto_mano_obra, double precio_total,
-			Configuracion_Cargo configuracion_cargo, Configuracion_Tiempo configuracion_tiempo, Tarifario tarifario) {
-		this.cantidad_empleada = cantidad_empleada;
-		this.monto_mano_obra = monto_mano_obra;
+	public Presupuesto(int masa_pieza, int tiempo_impresion, double coste_operario, double precio_total,
+			double ganancia, double tasa_falla, Configuracion_Cargo configuracion_cargo,
+			Configuracion_Tiempo configuracion_tiempo, Maquina maquina, Insumo insumo) {
+		super();
+		this.masa_pieza = masa_pieza;
+		this.tiempo_impresion = tiempo_impresion;
+		this.coste_operario = coste_operario;
 		this.precio_total = precio_total;
+		this.ganancia = ganancia;
+		this.tasa_falla = tasa_falla;
 		this.configuracion_cargo = configuracion_cargo;
 		this.configuracion_tiempo = configuracion_tiempo;
-		this.tarifario = tarifario;
+		this.maquina = maquina;
+		this.insumo = insumo;
 	}
-	
-	
 	
 }

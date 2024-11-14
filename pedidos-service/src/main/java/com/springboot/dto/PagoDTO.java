@@ -21,5 +21,5 @@ public class PagoDTO {
 	private String estado_pago;
 	private MultipartFile voucher;
 	
-	private Pedido pedido;
+	private Integer pedido_id;
 }

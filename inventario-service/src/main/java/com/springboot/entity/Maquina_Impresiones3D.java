@@ -1,36 +1,33 @@
 package com.springboot.entity;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "marca")
-public class Marca {
+@Table(name = "maquina_impresiones3d")
+public class Maquina_Impresiones3D {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int marca_id;
-	private String nombre;
-	private Boolean activo;
+	private int maquina_impresiones3d_id;
+	private String tipo_inyeccion;
+	private double coste_luzxhora;
+	private String arquitectura;
+	private double porcentaje_desperdicio;
 	
-	@OneToMany(mappedBy = "marca", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "maquina_impresiones3d")
 	@JsonIgnore
-	private List<Insumo> insumo;
-	
+	private Maquina maquina;
 }

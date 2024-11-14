@@ -30,6 +30,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.springboot.dto.PagoDTO;
 import com.springboot.entity.Pago;
+import com.springboot.entity.Pedido;
+import com.springboot.repository.PedidoRepository;
 import com.springboot.service.PagoService;
 
 @RestController
@@ -38,6 +40,9 @@ public class PagoController {
 
 	@Autowired
 	private PagoService pagoService;
+	
+	@Autowired
+	private PedidoRepository pedidoRepository;
 	
 	@Value("${file.voucher-upload-dir}")
 	private String voucherdirectorio;
@@ -68,6 +73,10 @@ public class PagoController {
 			pago.setMetodo_pago(pagoDTO.getMetodo_pago());
 			pago.setEstado_pago(pagoDTO.getEstado_pago());
 			pago.setVoucher(voucherPath);
+			//Y le asignamos a pago un pedido por su id, y para ello lo buscamos en la bd
+			Pedido pedido = pedidoRepository.findById(pagoDTO.getPedido_id()).orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
+			//Y por ultimo asignamos el pedido a pago
+			pago.setPedido(pedido);
 			
 			//Guardamos el nuevo pago en la base de datos
 			pagoService.save(pago);
@@ -157,6 +166,14 @@ public class PagoController {
 			pago.setMonto(pagoDTO.getMonto());
 			pago.setMetodo_pago(pagoDTO.getMetodo_pago());
 			pago.setEstado_pago(pagoDTO.getEstado_pago());
+			
+			//Buscamos el pedido por el pedido_id en pago
+			if (pagoDTO.getPedido_id() != null) {
+				Pedido pedido = pedidoRepository.findById(pagoDTO.getPedido_id())
+		                .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
+	            pago.setPedido(pedido);
+			}
+			
 			pagoService.save(pago);
 			return new ResponseEntity<>("Pago actualizado", HttpStatus.OK);
 			

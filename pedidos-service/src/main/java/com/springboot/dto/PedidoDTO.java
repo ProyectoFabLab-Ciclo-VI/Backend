@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.springboot.entity.Maquina;
 import com.springboot.entity.Modelo_Predefinido;
 import com.springboot.entity.Persona;
+import com.springboot.entity.Presupuesto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,10 +24,13 @@ public class PedidoDTO {
 	private String comentario;
 	private String estado;
 	private String codigo;
-	private double precio_venta;
 	private String fecha_pago;
 	
-	private Maquina maquina;
-	private Persona persona;
-	private Modelo_Predefinido modelo_predefinido;
+	//private Persona persona;
+	//private Modelo_Predefinido modelo_predefinido;
+	//private Presupuesto presupuesto;
+	
+	private Integer persona_id;
+	private Integer modelo_predefinido_id;
+	private Integer presupuesto_id;
 }

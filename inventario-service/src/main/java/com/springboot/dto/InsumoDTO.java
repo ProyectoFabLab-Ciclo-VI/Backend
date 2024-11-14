@@ -3,7 +3,9 @@ package com.springboot.dto;
 
 
 
-import com.springboot.entity.Marca;
+
+
+import com.springboot.entity.Categoria_Insumo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,8 +19,12 @@ public class InsumoDTO {
 	private String nombre;
 	private String descripcion;
 	private String unidad_medida;
+	private String marca;
+	private double precio_xunidad;
+	private int cantidad_total;
 	private Boolean activo;
+	private double coste_insumo;
 	
-	private Marca marca;
+	private Categoria_Insumo categoria_insumo;
 	
 }

@@ -25,10 +25,10 @@ import com.springboot.dto.Seguimiento_InsumoDTO;
 import com.springboot.entity.Insumo;
 import com.springboot.entity.Mantenimiento;
 import com.springboot.entity.Maquina;
+import com.springboot.entity.Maquina_Impresiones3D;
 import com.springboot.entity.Material;
+import com.springboot.entity.Papeleria_Ploteo;
 import com.springboot.entity.Seguimiento_Insumo;
-import com.springboot.entity.Tipo_Maquina;
-import com.springboot.repository.Tipo_MaquinaRepository;
 import com.springboot.service.InsumoService;
 import com.springboot.service.MantenimientoService;
 import com.springboot.service.MaquinaService;
@@ -66,9 +66,14 @@ public class InventarioController {
 	public ResponseEntity<?> addMaquina(@RequestBody MaquinaDTO maquinaDTO){	
 		Maquina maquina = new Maquina(maquinaDTO.getNombre(),
 									  maquinaDTO.getCodigo_upeu(),
+									  maquinaDTO.getCoste_maquina(),
+									  maquinaDTO.getCoste_amortizacion(),
 									  maquinaDTO.getActivo(),
-									  maquinaDTO.getTipo_maquina(),
-									  maquinaDTO.getEstado_maquina());
+									  maquinaDTO.getCategoria_insumo(),
+									  maquinaDTO.getEstado_maquina(),
+									  maquinaDTO.getInsumo(),
+									  maquinaDTO.getMaquina_impresiones3d(),
+									  maquinaDTO.getPapeleria_ploteo());
 		maquinaService.save(maquina);
 		return new ResponseEntity<>(maquina, HttpStatus.CREATED);
 	}
@@ -78,9 +83,31 @@ public class InventarioController {
 		Maquina maquina = maquinaService.getOne(id).get();
 		maquina.setNombre(maquinaDTO.getNombre());
 		maquina.setCodigo_upeu(maquinaDTO.getCodigo_upeu());
+		maquina.setCoste_maquina(maquinaDTO.getCoste_maquina());
+		maquina.setCoste_amortizacion(maquinaDTO.getCoste_amortizacion());
 		maquina.setActivo(maquinaDTO.getActivo());
-		maquina.setTipo_maquina(maquinaDTO.getTipo_maquina());
+		maquina.setCategoria_insumo(maquinaDTO.getCategoria_insumo());
 		maquina.setEstado_maquina(maquinaDTO.getEstado_maquina());
+		maquina.setInsumo(maquinaDTO.getInsumo());
+		
+		//Actualizamos Maquina_impresiones3d si exixte
+		if (maquina.getMaquina_impresiones3d() != null) {
+			Maquina_Impresiones3D impresiones3d = maquina.getMaquina_impresiones3d();
+			impresiones3d.setTipo_inyeccion(maquinaDTO.getMaquina_impresiones3d().getTipo_inyeccion());
+			impresiones3d.setCoste_luzxhora(maquinaDTO.getMaquina_impresiones3d().getCoste_luzxhora());
+			impresiones3d.setArquitectura(maquinaDTO.getMaquina_impresiones3d().getArquitectura());
+			impresiones3d.setPorcentaje_desperdicio(maquinaDTO.getMaquina_impresiones3d().getPorcentaje_desperdicio());
+		} else {
+			maquina.setMaquina_impresiones3d(maquinaDTO.getMaquina_impresiones3d());
+		}
+		
+		//Y actualizamos Papeleria_ploteo
+		if (maquina.getPapeleria_ploteo() != null) {
+			Papeleria_Ploteo papeleria_Ploteo = maquina.getPapeleria_ploteo();
+			papeleria_Ploteo.setTipo_tinta(maquinaDTO.getPapeleria_ploteo().getTipo_tinta());
+		} else {
+			maquina.setPapeleria_ploteo(maquinaDTO.getPapeleria_ploteo());
+		}
 		maquinaService.save(maquina);
 		return new ResponseEntity<>("Máquina actualizada", HttpStatus.OK);
 		
@@ -105,8 +132,13 @@ public class InventarioController {
 		Insumo insumo = new Insumo(insumoDTO.getNombre(),
 								   insumoDTO.getDescripcion(),
 								   insumoDTO.getUnidad_medida(),
+								   insumoDTO.getMarca(),
+								   insumoDTO.getPrecio_xunidad(),
+								   insumoDTO.getCantidad_total(),
 								   insumoDTO.getActivo(),
-								   insumoDTO.getMarca());
+								   insumoDTO.getCoste_insumo(),
+								   insumoDTO.getCategoria_insumo());
+								   
 		insumoService.save(insumo);
 		return new ResponseEntity<>(insumo, HttpStatus.CREATED);
 	}
@@ -117,8 +149,12 @@ public class InventarioController {
 		insumo.setNombre(insumoDTO.getNombre());
 		insumo.setDescripcion(insumoDTO.getDescripcion());
 		insumo.setUnidad_medida(insumoDTO.getUnidad_medida());
-		insumo.setActivo(insumoDTO.getActivo());
 		insumo.setMarca(insumoDTO.getMarca());
+		insumo.setPrecio_xunidad(insumoDTO.getPrecio_xunidad());
+		insumo.setCantidad_total(insumoDTO.getCantidad_total());
+		insumo.setActivo(insumoDTO.getActivo());
+		insumo.setCoste_insumo(insumoDTO.getCoste_insumo());
+		insumo.setCategoria_insumo(insumoDTO.getCategoria_insumo());
 		insumoService.save(insumo);
 		return new ResponseEntity<>("Insumo actualizado", HttpStatus.OK);		
 	}

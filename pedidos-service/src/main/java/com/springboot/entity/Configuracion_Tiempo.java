@@ -28,18 +28,12 @@ public class Configuracion_Tiempo {
 	private int configuracion_tiempo_id;
 	private double precioxminuto;
 	
-	@OneToOne
-	@JoinColumn(name = "maquina_id")
-	private Maquina maquina;
-	
 	@OneToMany(mappedBy = "configuracion_tiempo")
 	@JsonIgnore
 	private List<Presupuesto> presupuesto;
 
-	public Configuracion_Tiempo(double precioxminuto, Maquina maquina) {
-		
+	public Configuracion_Tiempo(double precioxminuto) {
+		super();
 		this.precioxminuto = precioxminuto;
-		this.maquina = maquina;
 	}
-	
 }

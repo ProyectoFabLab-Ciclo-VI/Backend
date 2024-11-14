@@ -36,7 +36,6 @@ public class Pedido {
 	private String comentario;
 	private String estado;
 	private String codigo;
-	private double precio_venta;
 	private String fecha_pago;
 	
 	@OneToOne(mappedBy = "pedido")
@@ -48,20 +47,20 @@ public class Pedido {
 	private List<Insumo_Pedido> insumo_pedido;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "maquina_id")
-	private Maquina maquina;
-	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "persona_id")
+	@JoinColumn(name = "persona_id", nullable = true)
 	private Persona persona;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "modelo_predefinido_id")
+	@JoinColumn(name = "modelo_predefinido_id",  nullable = true)
 	private Modelo_Predefinido modelo_predefinido;
 
+	@OneToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "presupuesto_id",  nullable = true)
+	private Presupuesto presupuesto;
+
 	public Pedido(String url_modelo, String fecha_pedido, String fecha_validacion, String comentario, String estado,
-			String codigo, double precio_venta, String fecha_pago, Maquina maquina, Persona persona,
-			Modelo_Predefinido modelo_predefinido) {
+			String codigo, String fecha_pago, Persona persona,
+			Modelo_Predefinido modelo_predefinido, Presupuesto presupuesto) {
 		
 		this.url_modelo = url_modelo;
 		this.fecha_pedido = fecha_pedido;
@@ -69,11 +68,10 @@ public class Pedido {
 		this.comentario = comentario;
 		this.estado = estado;
 		this.codigo = codigo;
-		this.precio_venta = precio_venta;
 		this.fecha_pago = fecha_pago;
-		this.maquina = maquina;
 		this.persona = persona;
 		this.modelo_predefinido = modelo_predefinido;
+		this.presupuesto = presupuesto;
 	}
 	
 	

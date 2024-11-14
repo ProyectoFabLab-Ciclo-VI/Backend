@@ -3,6 +3,7 @@ package com.springboot.entity;
 import java.util.Date;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,7 +30,7 @@ public class Pago {
 	private String estado_pago;
 	private String voucher;
 	
-	@OneToOne
+	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "pedido_id")
 	private Pedido pedido;
 

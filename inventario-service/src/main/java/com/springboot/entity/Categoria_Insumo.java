@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -15,30 +17,22 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "insumo")
-public class Insumo {
+@Table(name = "categoria_insumo")
+public class Categoria_Insumo {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int insumo_id;
+	private int categoria_insumo_id;
 	private String nombre;
-	private String descripcion;
-	private String unidad_medida;
-	private String marca;
-	private double precio_xunidad;
-	private int cantidad_total;
-	private Boolean activo;
-	private double coste_insumo;
 	
-	
-	@OneToMany(mappedBy = "insumo")
+	@OneToMany(mappedBy = "categoria_insumo", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JsonIgnore
-	private List<Insumo_Pedido> insumo_pedido;
+	private List<Insumo> insumo;
 	
-	@OneToMany(mappedBy = "insumo")
+	@OneToMany(mappedBy = "categoria_insumo", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JsonIgnore
-	private List<Presupuesto> presupuesto;
+	private List<Maquina> maquina;
 }
