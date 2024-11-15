@@ -32,7 +32,9 @@ import com.springboot.entity.Seguimiento_Insumo;
 import com.springboot.service.InsumoService;
 import com.springboot.service.MantenimientoService;
 import com.springboot.service.MaquinaService;
+import com.springboot.service.Maquina_Impresiones3dService;
 import com.springboot.service.MaterialService;
+import com.springboot.service.Papeleria_PloteoService;
 import com.springboot.service.Seguimiento_InsumoService;
 
 @RestController
@@ -53,6 +55,12 @@ public class InventarioController {
 	
 	@Autowired
 	private Seguimiento_InsumoService seguimiento_InsumoService;
+	
+	@Autowired
+	private Maquina_Impresiones3dService maquina_Impresiones3dService;
+	
+	@Autowired
+	private Papeleria_PloteoService papeleria_PloteoService;
 	
 	//Maquina CRUD
 	@GetMapping("/list/maquina")
@@ -115,7 +123,20 @@ public class InventarioController {
 	
 	@DeleteMapping("/delete/maquina/{id}")
 	public ResponseEntity<?> deleteMaquina(@PathVariable ("id") int id){
+		
+		Maquina maquina = maquinaService.getOne(id).orElseThrow(() -> new RuntimeException("Máquina no encontrada"));
 		maquinaService.delete(id);
+		
+		//Aca eliminamos la Maquina_Impresiones3d relacionada
+		if (maquina.getMaquina_impresiones3d() != null) {
+			maquina_Impresiones3dService.delete(maquina.getMaquina_impresiones3d().getMaquina_impresiones3d_id());
+		}
+		
+		//Aca eliminamos una máquina de tipo Papeleria_ploteo relacionada
+		if (maquina.getPapeleria_ploteo() != null) {
+			papeleria_PloteoService.delete(maquina.getPapeleria_ploteo().getPapeleria_ploteo_id());
+		}
+		
 		return new ResponseEntity<>("Máquina Eliminada", HttpStatus.ACCEPTED);
 	}
 	
