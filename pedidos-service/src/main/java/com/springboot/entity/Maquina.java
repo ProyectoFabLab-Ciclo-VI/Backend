@@ -10,6 +10,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -36,4 +37,12 @@ public class Maquina {
 	@OneToMany(mappedBy = "maquina")
 	@JsonIgnore
 	private List<Presupuesto>  presupuesto;
+	
+	@OneToOne(cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "maquina_impresiones3d_id")
+	private Maquina_Impresiones3D maquina_impresiones3d;
+	
+	@OneToOne(cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "papeleria_ploteo_id")
+	private Papeleria_Ploteo papeleria_ploteo;
 }
