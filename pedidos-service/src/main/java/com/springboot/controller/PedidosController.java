@@ -47,6 +47,8 @@ import com.springboot.service.Modelo_predefinidoService;
 import com.springboot.service.PedidoService;
 import com.springboot.service.PresupuestoService;
 
+import jakarta.ws.rs.core.HttpHeaders;
+
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
@@ -85,11 +87,11 @@ public class PedidosController {
 	@GetMapping("/list/pedido")
 	public ResponseEntity<Page<Pedido>> getPedidos(@RequestParam int page, @RequestParam int size) {
 		Page<Pedido> listPedidos = pedidoService.getAllPedidos(page, size);
-		
+		/*
 		listPedidos.forEach(pedidoImagen -> {
 			String nombreImagenPedido = pedidoImagen.getUrl_modelo(); //Asumiendo que existe la imagen del pedido
 			pedidoImagen.setUrl_modelo("/apipedidos/imagen-pedido/" + nombreImagenPedido);
-		});	
+		});	*/
 		return new ResponseEntity<>(listPedidos, HttpStatus.OK);
 	}
 
@@ -97,16 +99,16 @@ public class PedidosController {
 	public ResponseEntity<?> addPedido(@ModelAttribute PedidoDTO pedidoDTO) {
 
 		try {
-			//Verificamos si URL de la imagen esta presente, sino le asignamos nulo.
-			//Esto es para casos que realice un pedido sin imagen, y la imagen sea de un modelo predefinido
-			String urlModeloPedido = null;
+			//Verificamos si URL del archivo esta presente, sino le asignamos nulo.
+			//Esto es para casos que realice un pedido sin archivo, y la imagen sea de un modelo predefinido
+			String urlArchivoPedido = null;
 			if (pedidoDTO.getUrl_modelo() != null && !pedidoDTO.getUrl_modelo().isEmpty()) {
-				urlModeloPedido = guardarImagenPedido(pedidoDTO.getUrl_modelo());
+				urlArchivoPedido = guardarArchivoPedido(pedidoDTO.getUrl_modelo());
 			}
 			// Creamos un pedido y le asignamos la ruta del archivo
 			Pedido pedido = new Pedido();
-			if (urlModeloPedido != null) {
-				pedido.setUrl_modelo(urlModeloPedido);
+			if (urlArchivoPedido != null) {
+				pedido.setUrl_modelo(urlArchivoPedido);
 			}	
 			pedido.setFecha_pedido(pedidoDTO.getFecha_pedido());
 			pedido.setFecha_validacion(pedidoDTO.getFecha_validacion());
@@ -156,10 +158,10 @@ public class PedidosController {
 
 	}
 
-	// Metodo para guardar la imagen del modelo por pedido
-	private String guardarImagenPedido(MultipartFile imagenPedido) throws IOException {
+	// Metodo para guardar el archivo de un pedido personaliado
+	private String guardarArchivoPedido(MultipartFile archivoPedido) throws IOException {
 
-		String nombreArchivo = imagenPedido.getOriginalFilename();
+		String nombreArchivo = archivoPedido.getOriginalFilename();
 		Path path = Paths.get(pedidoDirectorio);
 
 		// Para asegurarnos que el directorio exista
@@ -169,48 +171,39 @@ public class PedidosController {
 
 		// Concatenamos el nombre del archivo de manera segura
 		Path archivoPath = path.resolve(nombreArchivo);
-		Files.copy(imagenPedido.getInputStream(), archivoPath, StandardCopyOption.REPLACE_EXISTING);
+		Files.copy(archivoPedido.getInputStream(), archivoPath, StandardCopyOption.REPLACE_EXISTING);
 
 		return nombreArchivo; // retorna solo el nombre del archivo, no la ruta
 	}
 
-	// endpoint para servir la imagen de pedido a la web y app
-	@GetMapping("/imagen-pedido/{nombreImagen:.+}")
-	public ResponseEntity<Resource> obtenerImagenPedido(@PathVariable String nombreImagen) {
+	// endpoint para descargar el archivo del pedido a la web y app
+	@GetMapping("/archivo-pedido/{nombreArchivo:.+}")
+	public ResponseEntity<Resource> obtenerImagenPedido(@PathVariable String nombreArchivo) {
+		
 		try {
-			// Ruta del directorio donde se almacena la imagen
-			Path path = Paths.get(pedidoDirectorio).resolve(nombreImagen);
-			Resource resource = new UrlResource(path.toUri());
-
-			// Verificar si el recurso existe
-			if (resource.exists() || resource.isReadable()) {
-				MediaType mediaType;
-				String extension = nombreImagen.substring(nombreImagen.lastIndexOf('.') + 1).toLowerCase();
-
-				switch (extension) {
-				case "jpg":
-				case "jpeg":
-					mediaType = MediaType.IMAGE_JPEG;
-					break;
-				case "png":
-					mediaType = MediaType.IMAGE_PNG;
-					break;
-				default:
-					mediaType = MediaType.APPLICATION_OCTET_STREAM; // tipo generico
-					break;
-				}
-				return ResponseEntity.ok().contentType(mediaType).body(resource);
-			} else {
+			//Ruta del archivo
+			Path archivoPath = Paths.get(pedidoDirectorio).resolve(nombreArchivo).normalize();
+			Resource resource = new UrlResource(archivoPath.toUri());
+			
+			//Verificar si el archivo existe y es legible
+			if (!resource.exists() || !resource.isReadable()) {
 				return ResponseEntity.notFound().build();
 			}
-
-		} catch (MalformedURLException e) {
+			//Determinar el tipo de contenido del archivo
+			String contentType = Files.probeContentType(archivoPath);
+			if (contentType == null) {
+				contentType = "application/octect.stream";//tipo genérico
+			}
+			//Configurar encabezados para la descarga
+			return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
+									  .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+ resource.getFilename() + "\"").body(resource);		
+		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
 
 	@PutMapping("/update/pedido/{id}")
-	public ResponseEntity<?> updatePedido(@PathVariable("id") int id, @RequestBody PedidoDTO pedidoDTO) {
+	public ResponseEntity<?> updatePedido(@PathVariable("id") int id, @ModelAttribute PedidoDTO pedidoDTO) {
 		try {
 			// Verificamos si el pedido existe
 			Optional<Pedido> optionalPedido = pedidoService.getOne(id);
@@ -219,17 +212,17 @@ public class PedidosController {
 			}
 			// Obtenemos el pedido existente
 			Pedido pedido = optionalPedido.get();
-			// Actualizamos la imagen del pedido si se proporciona una nueva
+			// Actualizamos el archivo del pedido si se proporciona una nueva
 			if (pedidoDTO.getUrl_modelo() != null && !pedidoDTO.getUrl_modelo().isEmpty()) {
 				// Eliminamos la imagen del pedido anterior
-				String imagenPedidoAntiguo = pedido.getUrl_modelo();
-				if (imagenPedidoAntiguo != null && !imagenPedidoAntiguo.isEmpty()) {
-					Path antiguaImagenPedidoPath = Paths.get(pedidoDirectorio).resolve(imagenPedidoAntiguo);
-					Files.deleteIfExists(antiguaImagenPedidoPath); // Eliminamos la imagen del pedido anterior
+				String archivoPedidoAntiguo = pedido.getUrl_modelo();
+				if (archivoPedidoAntiguo != null && !archivoPedidoAntiguo.isEmpty()) {
+					Path antiguoArchivoPedidoPath = Paths.get(pedidoDirectorio).resolve(archivoPedidoAntiguo);
+					Files.deleteIfExists(antiguoArchivoPedidoPath); // Eliminamos la imagen del pedido anterior
 				}
-				// Y guardamos la nueva imagen del pedido
-				String nuevaImagenPedidoPath = guardarImagenPedido(pedidoDTO.getUrl_modelo());
-				pedido.setUrl_modelo(nuevaImagenPedidoPath);
+				// Y guardamos el nuevo archivo del pedido
+				String nuevoArchivoPedidoPath = guardarArchivoPedido(pedidoDTO.getUrl_modelo());
+				pedido.setUrl_modelo(nuevoArchivoPedidoPath);
 			}
 			// Y por ultimos actualizamos el pedido completo
 			pedido.setFecha_pedido(pedidoDTO.getFecha_pedido());
@@ -238,9 +231,34 @@ public class PedidosController {
 			pedido.setEstado(pedidoDTO.getEstado());
 			pedido.setCodigo(pedidoDTO.getCodigo());
 			pedido.setFecha_pago(pedidoDTO.getFecha_pago());
-			//pedido.setPersona(pedidoDTO.getPersona());
-			//pedido.setModelo_predefinido(pedidoDTO.getModelo_predefinido());
-			//pedido.setPresupuesto(pedidoDTO.getPresupuesto());
+			// Buscamos las entidades relaciones usando los IDs solo si no son null
+	        Persona persona = null;
+	        if (pedidoDTO.getPersona_id() != null) {
+	            persona = personaRepository.findById(pedidoDTO.getPersona_id()).orElse(null);
+	        }
+
+	        Modelo_Predefinido modelo_Predefinido = null;
+	        if (pedidoDTO.getModelo_predefinido_id() != null) {
+	            modelo_Predefinido = modelo_predefinidoRepository.findById(pedidoDTO.getModelo_predefinido_id()).orElse(null);
+	        }
+
+	        Presupuesto presupuesto = null;
+	        if (pedidoDTO.getPresupuesto_id() != null) {
+	            presupuesto = presupuestoRepository.findById(pedidoDTO.getPresupuesto_id()).orElse(null);
+	        }
+
+	        // Asignamos las entidades si no son null
+	        if (persona != null) {
+	            pedido.setPersona(persona);
+	        }
+
+	        if (modelo_Predefinido != null) {
+	            pedido.setModelo_predefinido(modelo_Predefinido);
+	        }
+
+	        if (presupuesto != null) {
+	            pedido.setPresupuesto(presupuesto);
+	        }
 			pedidoService.save(pedido);
 			return new ResponseEntity<>("Pedido actualiado", HttpStatus.OK);
 
