@@ -41,4 +41,8 @@ public class Insumo {
 	@OneToMany(mappedBy = "insumo")
 	@JsonIgnore
 	private List<Presupuesto> presupuesto;
+	
+	@OneToMany(mappedBy = "insumo")
+	@JsonIgnore
+	private List<Modelo_Predefinido> modelo_predefinido;
 }

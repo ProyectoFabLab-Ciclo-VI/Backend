@@ -31,11 +31,14 @@ import com.springboot.dto.Insumo_PedidoDTO;
 import com.springboot.dto.Modelo_predefinidoDTO;
 import com.springboot.dto.PedidoDTO;
 import com.springboot.dto.PresupuestoDTO;
+import com.springboot.entity.Insumo;
 import com.springboot.entity.Insumo_Pedido;
 import com.springboot.entity.Modelo_Predefinido;
 import com.springboot.entity.Pedido;
 import com.springboot.entity.Persona;
 import com.springboot.entity.Presupuesto;
+import com.springboot.repository.InsumoRepository;
+import com.springboot.repository.Insumo_PedidoRepository;
 import com.springboot.repository.Modelo_predefinidoRepository;
 import com.springboot.repository.PersonaRepository;
 import com.springboot.repository.PresupuestoRepository;
@@ -69,6 +72,8 @@ public class PedidosController {
 	private Modelo_predefinidoRepository modelo_predefinidoRepository;
 	@Autowired
 	private PresupuestoRepository presupuestoRepository;
+	@Autowired
+	private InsumoRepository insumoRepository;
 
 	@Value("${file.upload-dir}")
 	private String directorio;
@@ -256,18 +261,27 @@ public class PedidosController {
 		Page<Modelo_Predefinido> listModelos = modelo_predefinidoService.getAllModelos(page, size);
 
 		listModelos.forEach(modelo -> {
-			String nombreImagen = modelo.getImagen(); // Asumiendo que este es el nombre de la imagen almacenada
-			modelo.setImagen("/apipedidos/imagen-modelo/" + nombreImagen);
+			String nombreImagen1 = modelo.getImagen1(); // Asumiendo que este es el nombre de la imagen almacenada
+			modelo.setImagen1("/apipedidos/imagen-modelo/" + nombreImagen1);
+			String nombreImagen2 = modelo.getImagen2();
+			modelo.setImagen2("/apipedidos/imagen-modelo/" + nombreImagen2);
+			String nombreImagen3 = modelo.getImagen3();
+			modelo.setImagen3("/apipedidos/imagen-modelo/" + nombreImagen3);
+			String nombreImagen4 = modelo.getImagen4();
+			modelo.setImagen4("/apipedidos/imagen-modelo/" + nombreImagen4);
 		});
 
-		return new ResponseEntity<>(listModelos, HttpStatus.CREATED);
+		return new ResponseEntity<>(listModelos, HttpStatus.OK);
 	}
 
 	@PostMapping("/add/modelo")
 	public ResponseEntity<?> addModelo(@ModelAttribute Modelo_predefinidoDTO modelo_predefinidoDTO) {
 		try {
 			// Guardar la imagen y obtener la ruta
-			String imagenPath = guardarImagen(modelo_predefinidoDTO.getImagen());
+			String imagenPath1 = guardarImagen(modelo_predefinidoDTO.getImagen1());
+			String imagenPath2 = guardarImagen(modelo_predefinidoDTO.getImagen2());
+			String imagenPath3 = guardarImagen(modelo_predefinidoDTO.getImagen3());
+			String imagenPath4 = guardarImagen(modelo_predefinidoDTO.getImagen4());
 
 			// Crear el modelo y asignar la ruta de la imagen
 			Modelo_Predefinido modelo_Predefinido = new Modelo_Predefinido();
@@ -275,8 +289,20 @@ public class PedidosController {
 			modelo_Predefinido.setCodigo(modelo_predefinidoDTO.getCodigo());
 			modelo_Predefinido.setComentario(modelo_predefinidoDTO.getComentario());
 			modelo_Predefinido.setPrecio(modelo_predefinidoDTO.getPrecio());
-			modelo_Predefinido.setImagen(imagenPath); // Asignas la ruta o nombre del archivo
-
+			modelo_Predefinido.setImagen1(imagenPath1); // Asignas la ruta o nombre del archivo
+			modelo_Predefinido.setImagen2(imagenPath2);
+			modelo_Predefinido.setImagen3(imagenPath3);
+			modelo_Predefinido.setImagen4(imagenPath4);
+			
+			//Buscamos las entidades relacionadas usando los IDs solo si no son null
+			Insumo insumo = null;
+			if (modelo_predefinidoDTO.getInsumo_id() != null) {
+				insumo = insumoRepository.findById(modelo_predefinidoDTO.getInsumo_id()).orElse(null);
+			}
+			//Y aca asignamos un Insumo por su id solo si no son null
+			if (insumo != null) {
+				modelo_Predefinido.setInsumo(insumo);
+			}		
 			// Guardar el modelo en la base de datos
 			modelo_predefinidoService.save(modelo_Predefinido);
 
@@ -351,18 +377,50 @@ public class PedidosController {
 			}
 			// Obtenemos el modelo existente
 			Modelo_Predefinido modelo_Predefinido = optionalModelo.get();
-			// Actualizamos una imagen si se proporciona una nueva
-			if (modelo_predefinidoDTO.getImagen() != null && !modelo_predefinidoDTO.getImagen().isEmpty()) {
+			
+			// Actualizamos la imagen1 si se proporciona una nueva
+			if (modelo_predefinidoDTO.getImagen1() != null && !modelo_predefinidoDTO.getImagen1().isEmpty()) {
 				// Eliminamos la imagen anterior
-				String antiguaImagen = modelo_Predefinido.getImagen();
-				if (antiguaImagen != null && !antiguaImagen.isEmpty()) {
-					Path antiguaImagenPath = Paths.get(directorio).resolve(antiguaImagen);
-					Files.deleteIfExists(antiguaImagenPath);// Elimina la imagen anterior si existe
+				String antiguaImagen1 = modelo_Predefinido.getImagen1();
+				if (antiguaImagen1 != null && !antiguaImagen1.isEmpty()) {
+					Path antiguaImagenPath1 = Paths.get(directorio).resolve(antiguaImagen1);
+					Files.deleteIfExists(antiguaImagenPath1);// Elimina la imagen anterior si existe
 				}
 				// Guarda la nueva imagen
-				String nuevaImagenPath = guardarImagen(modelo_predefinidoDTO.getImagen());
-				modelo_Predefinido.setImagen(nuevaImagenPath);
+				String nuevaImagenPath1 = guardarImagen(modelo_predefinidoDTO.getImagen1());
+				modelo_Predefinido.setImagen1(nuevaImagenPath1);
 			}
+			//Actualizamos la imagen2
+			if (modelo_predefinidoDTO.getImagen2() != null && !modelo_predefinidoDTO.getImagen2().isEmpty()) {
+				String antiguaImagen2 = modelo_Predefinido.getImagen2();
+				if (antiguaImagen2 != null && antiguaImagen2.isEmpty()) {
+					Path antiguaImagenPath2 = Paths.get(directorio).resolve(antiguaImagen2);
+					Files.deleteIfExists(antiguaImagenPath2);
+				}
+				String nuevaImagenPath2 = guardarImagen(modelo_predefinidoDTO.getImagen2());
+				modelo_Predefinido.setImagen2(nuevaImagenPath2);
+			}
+			//Actualizamos la imagen3
+			if (modelo_predefinidoDTO.getImagen3() != null && !modelo_predefinidoDTO.getImagen3().isEmpty()) {
+				String antiguaImagen3 = modelo_Predefinido.getImagen3();
+				if (antiguaImagen3 != null && antiguaImagen3.isEmpty()) {
+					Path antiguaImagenPath3 = Paths.get(directorio).resolve(antiguaImagen3);
+					Files.deleteIfExists(antiguaImagenPath3);
+				}
+				String nuevaImagenPath3 = guardarImagen(modelo_predefinidoDTO.getImagen3());
+				modelo_Predefinido.setImagen3(nuevaImagenPath3);
+			}
+			//Actualizamos la imagen4
+			if (modelo_predefinidoDTO.getImagen4() != null && !modelo_predefinidoDTO.getImagen4().isEmpty()) {
+				String antiguaImagen4 = modelo_Predefinido.getImagen4();
+				if (antiguaImagen4 != null && antiguaImagen4.isEmpty()) {
+					Path antiguaImagenPath4 = Paths.get(directorio).resolve(antiguaImagen4);
+					Files.deleteIfExists(antiguaImagenPath4);
+				}
+				String nuevaImagenPath4 = guardarImagen(modelo_predefinidoDTO.getImagen4());
+				modelo_Predefinido.setImagen4(nuevaImagenPath4);
+			}
+						
 			// Y actualizamos el modelo predefinido
 			modelo_Predefinido.setNombre(modelo_predefinidoDTO.getNombre());
 			modelo_Predefinido.setCodigo(modelo_predefinidoDTO.getCodigo());
