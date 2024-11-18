@@ -69,4 +69,10 @@ public class PersonaController {
 		personaService.delete(id);
 		return new ResponseEntity("Persona eliminada", HttpStatus.ACCEPTED);
 	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<?> getPersonaById (@PathVariable ("id") int id){
+		Persona persona = personaService.finPersonaById(id);
+        return ResponseEntity.ok(persona);
+	}
 }

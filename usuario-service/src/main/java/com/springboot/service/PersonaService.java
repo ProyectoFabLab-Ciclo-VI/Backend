@@ -30,4 +30,9 @@ public class PersonaService {
 	public void delete(int id) {
 		personaRepository.deleteById(id);
 	}
+	
+	public Persona finPersonaById (int id) {
+		return personaRepository.findById(id).
+				orElseThrow(() -> new RuntimeException("Persona no encontrada con ID" + id));
+	}
 }

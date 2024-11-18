@@ -63,16 +63,23 @@ public class PagoController {
 	@PostMapping("/add/pago")
 	public ResponseEntity<?> addPagos (@ModelAttribute PagoDTO pagoDTO){
 		try {
-			//Guardamos la imagen del voucher y obtenemos la ruta
-			String voucherPath = guardarVoucher(pagoDTO.getVoucher());
-			
-			//Creamos el nuevo pago y asignamos la ruta del archivo del voucher
+			//Esto en caso en que no se envie una imagen del voucher
+			String imagenVoucher = null;
+			if (pagoDTO.getVoucher() != null && !pagoDTO.getVoucher().isEmpty()) {
+				//Guardamos la imagen del voucher
+				imagenVoucher = guardarVoucher(pagoDTO.getVoucher());
+			}
+			//Y creamos un pago y le asignamos la imagen del voucher
 			Pago pago = new Pago();
+			if (imagenVoucher != null) {
+				pago.setVoucher(imagenVoucher);
+			}
+			
 			pago.setFecha_pago(pagoDTO.getFecha_pago());
 			pago.setMonto(pagoDTO.getMonto());
 			pago.setMetodo_pago(pagoDTO.getMetodo_pago());
 			pago.setEstado_pago(pagoDTO.getEstado_pago());
-			pago.setVoucher(voucherPath);
+			
 			//Y le asignamos a pago un pedido por su id, y para ello lo buscamos en la bd
 			Pedido pedido = pedidoRepository.findById(pagoDTO.getPedido_id()).orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
 			//Y por ultimo asignamos el pedido a pago
