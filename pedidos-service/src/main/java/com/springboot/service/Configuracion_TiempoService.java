@@ -1,5 +1,6 @@
 package com.springboot.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,11 @@ public class Configuracion_TiempoService {
 	public Page<Configuracion_Tiempo> getAllConfiguracionTiempos (int page, int size){
 		Pageable pageable = PageRequest.of(page, size);
 		return configuracion_TiempoRepository.findAll(pageable);
+	}
+	
+	//Para listar sin paginacion
+	public List<Configuracion_Tiempo> list(){
+		return configuracion_TiempoRepository.findAll();
 	}
 	
 	public Optional<Configuracion_Tiempo> getOne (int id){

@@ -1,5 +1,6 @@
 package com.springboot.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,12 @@ public class MaquinaService {
 		return maquinaRepository.findAll(pageable);
 		
 	}
+	
+	//Listar sin paginacion
+	public List<Maquina> list(){
+		return maquinaRepository.findAll();
+	}
+	
 	public Optional<Maquina> getOne(int id){
 		return maquinaRepository.findById(id);
 	}

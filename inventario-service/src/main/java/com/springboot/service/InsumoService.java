@@ -1,5 +1,6 @@
 package com.springboot.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,11 @@ public class InsumoService {
 	public Page<Insumo> getAllInsumos (int page, int size){
 		Pageable pageable = PageRequest.of(page, size);
 		return insumoRepository.findAll(pageable);
+	}
+	
+	//Listar sin paginacion
+	public List<Insumo> list(){
+		return insumoRepository.findAll();
 	}
 	
 	public Optional<Insumo> getOne (int id){

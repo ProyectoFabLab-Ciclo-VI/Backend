@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +23,8 @@ import com.springboot.dto.MantenimientoDTO;
 import com.springboot.dto.MaquinaDTO;
 import com.springboot.dto.MaterialDTO;
 import com.springboot.dto.Seguimiento_InsumoDTO;
+import com.springboot.entity.Categoria_Insumo;
+import com.springboot.entity.Estado_Maquina;
 import com.springboot.entity.Insumo;
 import com.springboot.entity.Mantenimiento;
 import com.springboot.entity.Maquina;
@@ -29,6 +32,8 @@ import com.springboot.entity.Maquina_Impresiones3D;
 import com.springboot.entity.Material;
 import com.springboot.entity.Papeleria_Ploteo;
 import com.springboot.entity.Seguimiento_Insumo;
+import com.springboot.service.Categoria_InsumoService;
+import com.springboot.service.Estado_MaquinaService;
 import com.springboot.service.InsumoService;
 import com.springboot.service.MantenimientoService;
 import com.springboot.service.MaquinaService;
@@ -62,12 +67,25 @@ public class InventarioController {
 	@Autowired
 	private Papeleria_PloteoService papeleria_PloteoService;
 	
+	@Autowired
+	private Categoria_InsumoService categoria_InsumoService;
+	
+	@Autowired
+	private Estado_MaquinaService estado_MaquinaService;
+	
 	//Maquina CRUD
 	@GetMapping("/list/maquina")
 	public ResponseEntity<Page<Maquina>> getMaquinas (@RequestParam int page,
 													  @RequestParam int size){
 		Page<Maquina> listMaquina = maquinaService.getAllMaquina(page, size);
 		return new ResponseEntity<>(listMaquina, HttpStatus.OK);
+	}
+	
+	//Listar sin paginación
+	@GetMapping("/list-all/maquina")
+	public ResponseEntity<List<Maquina>> listAllMaquinas(){
+		List<Maquina> listMaquinas = maquinaService.list();
+		return new ResponseEntity<List<Maquina>>(listMaquinas, HttpStatus.OK);
 	}
 	
 	@PostMapping("/add/maquina")
@@ -148,6 +166,13 @@ public class InventarioController {
 		return new ResponseEntity<>(listInsumo, HttpStatus.OK);
 	}
 	
+	//Listar sin paginacion
+	@GetMapping("/list-all/insumo")
+	public ResponseEntity<List<Insumo>> findAllInsumos(){
+		List<Insumo> listInsumos = insumoService.list();
+		return new ResponseEntity<List<Insumo>>(listInsumos, HttpStatus.OK);
+	}
+	
 	@PostMapping("/add/insumo")
 	public ResponseEntity<?> addInsumo(@RequestBody InsumoDTO insumoDTO){
 		Insumo insumo = new Insumo(insumoDTO.getNombre(),
@@ -187,11 +212,19 @@ public class InventarioController {
 	}
 	
 	//Material CRUD
+	//Listar con paginacion
 	@GetMapping("/list/material")
 	public ResponseEntity<Page<Material>> getMateriales (@RequestParam int page,
 													  	 @RequestParam int size){
 		Page<Material> listMaterial = materialService.getAllMateriales(page, size);
 		return new ResponseEntity<>(listMaterial, HttpStatus.OK);
+	}
+	
+	//Listar sin paginacion
+	@GetMapping("/list-all/material")
+	public ResponseEntity<List<Material>> findAllMateriales(){
+		List<Material> listMateriales = materialService.list();
+		return new ResponseEntity<List<Material>>(listMateriales, HttpStatus.OK);
 	}
 	
 	@PostMapping("/add/material")
@@ -223,11 +256,18 @@ public class InventarioController {
 	}
 	
 	//Mantenimiento CRUD
+	//Listar por paginacion
 	@GetMapping("/list/mantenimiento")
 	public ResponseEntity<Page<Mantenimiento>> getMantenimientos (@RequestParam int page,
 																  @RequestParam int size){
 		Page<Mantenimiento> listMantenimiento = mantenimientoService.getAllMantenimientos(page, size);
 		return new ResponseEntity<>(listMantenimiento, HttpStatus.OK);
+	}
+	//Listar sin paginacion
+	@GetMapping("/list-all/mantenimiento")
+	public ResponseEntity<List<Mantenimiento>> findAllMantenimientos(){
+		List<Mantenimiento> listMantenimientos = mantenimientoService.list();
+		return new ResponseEntity<List<Mantenimiento>>(listMantenimientos, HttpStatus.OK);
 	}
 	
 	@PostMapping("/add/mantenimiento")
@@ -259,11 +299,19 @@ public class InventarioController {
 	
 	
 	//CRUD Seguimiento_Insumo
+	//Listar por paginacion
 	@GetMapping("/list/seguimiento-insumo")
 	public ResponseEntity<Page<Seguimiento_Insumo>> getSeguimientoInsumos (@RequestParam int page,
 																		   @RequestParam int size){
 		Page<Seguimiento_Insumo> listSeguimientoInsumos = seguimiento_InsumoService.getAllSeguimientoInsumos(page, size);
 		return new ResponseEntity<> (listSeguimientoInsumos, HttpStatus.OK);
+	}
+	
+	//Listar sin paginacion
+	@GetMapping("/list-all/seguimiento-insumo")
+	public ResponseEntity<List<Seguimiento_Insumo>> findAllSeguimientoInsumos (){
+		List<Seguimiento_Insumo> listSeguimientoInsumos = seguimiento_InsumoService.list();
+		return new ResponseEntity<List<Seguimiento_Insumo>>(listSeguimientoInsumos, HttpStatus.OK);
 	}
 	
 	@PostMapping("/add/seguimiento-insumo")
@@ -292,4 +340,38 @@ public class InventarioController {
 		seguimiento_InsumoService.delete(id);
 		return new ResponseEntity<>("Seguimiento-Insumo eliminado", HttpStatus.OK);
 	}
+	
+	//Maquina_Impresiones3D CRUD
+	//Para listar sin paginacion
+	@GetMapping("/list-all/maquinas-impresiones3d")
+	public ResponseEntity<List<Maquina_Impresiones3D>> findAllMaquinasImpresiones3d(){
+		List<Maquina_Impresiones3D> listMaquinasImpresiones3d = maquina_Impresiones3dService.list();
+		return new ResponseEntity<List<Maquina_Impresiones3D>>(listMaquinasImpresiones3d, HttpStatus.OK);
+	}
+	
+	//Papeleria_ploteo CRUD
+	//Para listar sin paginacion
+	@GetMapping("/list-all/papeleria-ploteo")
+	public ResponseEntity<List<Papeleria_Ploteo>> findAllPapeleriaPloteos(){
+		List<Papeleria_Ploteo> listPapeleriaPloteos = papeleria_PloteoService.list();
+		return new ResponseEntity<List<Papeleria_Ploteo>>(listPapeleriaPloteos, HttpStatus.OK);
+	}
+	
+	//Categoria_Insumo CRUD
+	//Para listar sin paginacion
+	@GetMapping("/list-all/categoria-insumo")
+	public ResponseEntity<List<Categoria_Insumo>> findAllCategoriaInsumos(){
+		List<Categoria_Insumo> listCategoriaInsumos = categoria_InsumoService.list();
+		return new ResponseEntity<List<Categoria_Insumo>>(listCategoriaInsumos, HttpStatus.OK);
+	}
+	
+	//Estado_Maquina CRUD
+	//Para listar sin paginacion
+	@GetMapping("/list-all/estado-maquina")
+	public ResponseEntity<List<Estado_Maquina>> findAllEstadoMaquina(){
+		List<Estado_Maquina> listEstadoMaquina = estado_MaquinaService.list();
+		return new ResponseEntity<List<Estado_Maquina>>(listEstadoMaquina, HttpStatus.OK);
+	}
+	
+	
 }

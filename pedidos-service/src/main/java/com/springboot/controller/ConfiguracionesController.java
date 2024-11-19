@@ -1,5 +1,7 @@
 package com.springboot.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,11 +35,19 @@ public class ConfiguracionesController {
 	private Configuracion_CargoService configuracion_CargoService;
 	
 	//CRUD Configuracion_Tiempo
+	//Listar con paginacion
 	@GetMapping("/list/configuracion-tiempo")
 	public ResponseEntity<Page<Configuracion_Tiempo>> getConfiguracionTiempo (@RequestParam int page,
 																			  @RequestParam int size){
 		Page<Configuracion_Tiempo> listConfiguracionTiempo = configuracion_TiempoService.getAllConfiguracionTiempos(page, size);
 		return new ResponseEntity<>(listConfiguracionTiempo, HttpStatus.OK);
+	}
+	
+	//Para listar sin paginacion
+	@GetMapping("/list-all/configuracion-tiempo")
+	public ResponseEntity<List<Configuracion_Tiempo>> findAllConfiguracionTiempo(){
+		List<Configuracion_Tiempo> listConfiguracionTiempo = configuracion_TiempoService.list();
+		return new ResponseEntity<List<Configuracion_Tiempo>>(listConfiguracionTiempo, HttpStatus.OK);
 	}
 	
 	@PostMapping("/add/configuracion-tiempo")
@@ -62,11 +72,18 @@ public class ConfiguracionesController {
 	}
 	
 	//CRUD Configuracion_Cargo
+	//Listar con paginacion
 	@GetMapping("/list/configuracion-cargo")
 	public ResponseEntity<Page<Configuracion_Cargo>> getConfiguracionCargo (@RequestParam int page,
 																			@RequestParam int size){
 		Page<Configuracion_Cargo> listConfiguracionCargo = configuracion_CargoService.getAllConfiguracionCargos(page, size);
 		return new ResponseEntity<>(listConfiguracionCargo, HttpStatus.OK);
+	}
+	//Listar sin paginacion
+	@GetMapping("/list-all/configuracion-cargo")
+	public ResponseEntity<List<Configuracion_Cargo>> findAllConfiguracionCargos(){
+		List<Configuracion_Cargo> listConfiguracionCargos = configuracion_CargoService.list();
+		return new ResponseEntity<List<Configuracion_Cargo>>(listConfiguracionCargos, HttpStatus.OK);
 	}
 	
 	@PostMapping("/add/configuracion-cargo")

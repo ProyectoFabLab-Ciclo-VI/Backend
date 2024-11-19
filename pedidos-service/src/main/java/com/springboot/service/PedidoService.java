@@ -1,5 +1,6 @@
 package com.springboot.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,11 @@ public class PedidoService {
 	public Page<Pedido> getAllPedidos (int page, int size){
 		Pageable pageable = PageRequest.of(page, size);
 		return pedidoRepository.findAll(pageable);
+	}
+	
+	//Para listar sin paginacion
+	public List<Pedido> list(){
+		return pedidoRepository.findAll();
 	}
 	
 	public Optional<Pedido> getOne (int id){

@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,6 +85,7 @@ public class PedidosController {
 	private String pedidoDirectorio;
 
 	// CRUD Pedido
+	//Listar con paginacion
 	@GetMapping("/list/pedido")
 	public ResponseEntity<Page<Pedido>> getPedidos(@RequestParam int page, @RequestParam int size) {
 		Page<Pedido> listPedidos = pedidoService.getAllPedidos(page, size);
@@ -93,6 +95,12 @@ public class PedidosController {
 			pedidoImagen.setUrl_modelo("/apipedidos/imagen-pedido/" + nombreImagenPedido);
 		});	*/
 		return new ResponseEntity<>(listPedidos, HttpStatus.OK);
+	}
+	//Listar sin paginacion
+	@GetMapping("/list-all/pedido")
+	public ResponseEntity<List<Pedido>> findAllPedidos (){
+		List<Pedido> listPedidos = pedidoService.list();
+		return new ResponseEntity<List<Pedido>>(listPedidos, HttpStatus.OK);
 	}
 
 	@PostMapping("/add/pedido")
@@ -274,6 +282,7 @@ public class PedidosController {
 	}
 
 	// CRUD Modelo_predefinidos
+	//Listar por paginacion
 	@GetMapping("/list/modelo")
 	public ResponseEntity<Page<Modelo_Predefinido>> getModelos(@RequestParam int page, @RequestParam int size) {
 		Page<Modelo_Predefinido> listModelos = modelo_predefinidoService.getAllModelos(page, size);
@@ -291,7 +300,14 @@ public class PedidosController {
 
 		return new ResponseEntity<>(listModelos, HttpStatus.OK);
 	}
-
+	//Listar sin paginacion
+	@GetMapping("/list-all/modelo")
+	public ResponseEntity<List<Modelo_Predefinido>> findAllModeloPredefinidos(){
+		List<Modelo_Predefinido> listModeloPredefinidos = modelo_predefinidoService.list();
+		return new ResponseEntity<List<Modelo_Predefinido>>(listModeloPredefinidos, HttpStatus.OK);
+	}
+	
+	
 	@PostMapping("/add/modelo")
 	public ResponseEntity<?> addModelo(@ModelAttribute Modelo_predefinidoDTO modelo_predefinidoDTO) {
 		try {
@@ -485,10 +501,17 @@ public class PedidosController {
 	}
 
 	// CRUD Presupuesto
+	//Listar con paginacion
 	@GetMapping("/list/presupuesto")
 	public ResponseEntity<Page<Presupuesto>> getPresupuestos(@RequestParam int page, @RequestParam int size) {
 		Page<Presupuesto> listPresupuesto = presupuestoService.getAllPresupuestos(page, size);
 		return new ResponseEntity<>(listPresupuesto, HttpStatus.OK);
+	}
+	//Listar sin paginacion
+	@GetMapping("/list-all/presupuesto")
+	public ResponseEntity<List<Presupuesto>> findAllPresupuestos(){
+		List<Presupuesto> listPresupuestos = presupuestoService.list();
+		return new ResponseEntity<List<Presupuesto>>(listPresupuestos, HttpStatus.OK);
 	}
 
 	@PostMapping("/add/presupuesto")

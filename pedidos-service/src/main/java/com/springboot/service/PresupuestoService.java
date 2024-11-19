@@ -1,5 +1,6 @@
 package com.springboot.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,10 @@ public class PresupuestoService {
 	public Page<Presupuesto> getAllPresupuestos (int page, int size){
 		Pageable pageable = PageRequest.of(page, size);
 		return presupuestoRepository.findAll(pageable);
+	}
+	//Para listar sin paginacion
+	public List<Presupuesto> list(){
+		return presupuestoRepository.findAll();
 	}
 	
 	public Optional<Presupuesto> getOne (int id){

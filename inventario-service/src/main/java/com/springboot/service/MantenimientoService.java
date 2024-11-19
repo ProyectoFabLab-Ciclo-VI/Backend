@@ -1,5 +1,6 @@
 package com.springboot.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,10 @@ public class MantenimientoService {
 	public Page<Mantenimiento> getAllMantenimientos (int page, int size){
 		Pageable pageable = PageRequest.of(page, size);
 		return mantenimientoRepository.findAll(pageable);
+	}
+	//Para listar sin paginacion
+	public List<Mantenimiento> list(){
+		return mantenimientoRepository.findAll();
 	}
 	
 	public Optional<Mantenimiento> getOne (int id){
