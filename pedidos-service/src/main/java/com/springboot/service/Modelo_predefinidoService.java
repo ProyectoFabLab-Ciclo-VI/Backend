@@ -39,4 +39,9 @@ public class Modelo_predefinidoService {
 	public void delete (int id) {
 		modelo_predefinidoRepository.deleteById(id);
 	}
+	
+	//Para filtrar por estado ya sea "nuevo" o "viejo"
+	public List<Modelo_Predefinido> obtenerPorEstado (String estado){
+		return modelo_predefinidoRepository.findByEstado(estado);
+	}
 }

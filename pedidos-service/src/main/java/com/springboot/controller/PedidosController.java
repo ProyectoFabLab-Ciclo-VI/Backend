@@ -323,6 +323,7 @@ public class PedidosController {
 			modelo_Predefinido.setCodigo(modelo_predefinidoDTO.getCodigo());
 			modelo_Predefinido.setComentario(modelo_predefinidoDTO.getComentario());
 			modelo_Predefinido.setPrecio(modelo_predefinidoDTO.getPrecio());
+			modelo_Predefinido.setEstado(modelo_predefinidoDTO.getEstado());
 			modelo_Predefinido.setImagen1(imagenPath1); // Asignas la ruta o nombre del archivo
 			modelo_Predefinido.setImagen2(imagenPath2);
 			modelo_Predefinido.setImagen3(imagenPath3);
@@ -460,6 +461,7 @@ public class PedidosController {
 			modelo_Predefinido.setCodigo(modelo_predefinidoDTO.getCodigo());
 			modelo_Predefinido.setComentario(modelo_predefinidoDTO.getComentario());
 			modelo_Predefinido.setPrecio(modelo_predefinidoDTO.getPrecio());
+			modelo_Predefinido.setEstado(modelo_predefinidoDTO.getEstado());
 			modelo_predefinidoService.save(modelo_Predefinido);
 			return new ResponseEntity("Modelo actualizado", HttpStatus.OK);
 
@@ -472,6 +474,13 @@ public class PedidosController {
 	public ResponseEntity<?> deleteModelo(@PathVariable("id") int id) {
 		modelo_predefinidoService.delete(id);
 		return new ResponseEntity<>("Modelo predefinido eliminado", HttpStatus.OK);
+	}
+	
+	//Filtrar por estado, ya sea nuevo o viejo
+	@GetMapping("/buscar-estado/modelo/{estado}")
+	public ResponseEntity<List<Modelo_Predefinido>> listModeloPorEstado(@PathVariable ("estado") String estado){
+		List<Modelo_Predefinido> lisModelosEstado = modelo_predefinidoService.obtenerPorEstado(estado);
+		return new ResponseEntity<List<Modelo_Predefinido>>(lisModelosEstado, HttpStatus.OK);
 	}
 
 	// CRUD Insumo_Pedido

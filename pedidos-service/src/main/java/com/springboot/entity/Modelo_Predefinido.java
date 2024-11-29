@@ -31,6 +31,7 @@ public class Modelo_Predefinido {
 	private String codigo;
 	private String comentario;
 	private double precio;
+	private String estado;
 	private String imagen1;
 	private String imagen2;
 	private String imagen3;

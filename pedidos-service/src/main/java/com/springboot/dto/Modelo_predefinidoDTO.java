@@ -16,6 +16,7 @@ public class Modelo_predefinidoDTO {
 	private String codigo;
 	private String comentario;
 	private double precio;
+	private String estado;
 	private MultipartFile imagen1;
 	private MultipartFile imagen2;
 	private MultipartFile imagen3;
