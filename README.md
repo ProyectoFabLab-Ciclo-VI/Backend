@@ -63,3 +63,32 @@ INSERT INTO insumo (insumo_id, activo, descripcion, dimension, div_unidad, nombr
 INSERT INTO material (material_id, activo, cantidad, codigo_upeu, nombre) VALUES (1, 1, 50, 'DFD32', 'Guincha');
 INSERT INTO material (material_id, activo, cantidad, codigo_upeu, nombre) VALUES (2, 1, 10, 'SXC12', 'Dron');
 INSERT INTO material (material_id, activo, cantidad, codigo_upeu, nombre) VALUES (3, 1, 50, 'LKJ55', 'Tijera');
+
+--Creación de Modelos_Predefinidos
+--Modelos nuevos
+INSERT INTO modelo_predefinido(modelo_predefinido_id, nombre, codigo, comentario, precio, imagen1, imagen2, imagen3, imagen4, estado, insumo_id) VALUES (1, 'espada', 'UPEU001','Modelo 1', '50.0','','','','','nuevo',1);
+INSERT INTO modelo_predefinido(modelo_predefinido_id, nombre, codigo, comentario, precio, imagen1, imagen2, imagen3, imagen4, estado, insumo_id) VALUES (2, 'futbol', 'UPEU002','Modelo 2', '60.0','','','','','nuevo',1);
+INSERT INTO modelo_predefinido(modelo_predefinido_id, nombre, codigo, comentario, precio, imagen1, imagen2, imagen3, imagen4, estado, insumo_id) VALUES (3, 'decoracion', 'UPEU003','Modelo 3', '70.5','','','','','nuevo',1);
+INSERT INTO modelo_predefinido(modelo_predefinido_id, nombre, codigo, comentario, precio, imagen1, imagen2, imagen3, imagen4, estado, insumo_id) VALUES (4, 'animal', 'UPEU004','Modelo 4', '80.0','','','','','nuevo',1);
+INSERT INTO modelo_predefinido(modelo_predefinido_id, nombre, codigo, comentario, precio, imagen1, imagen2, imagen3, imagen4, estado, insumo_id) VALUES (5, '', 'UPEU005','Modelo 5', '40.5','','','','','nuevo',1);
+--Modelos viejo
+INSERT INTO modelo_predefinido(modelo_predefinido_id, nombre, codigo, comentario, precio, imagen1, imagen2, imagen3, imagen4, estado, insumo_id) VALUES (6, 'espada1', 'UPEU006','Modelo 6', '50.0','','','','','viejo',1);
+INSERT INTO modelo_predefinido(modelo_predefinido_id, nombre, codigo, comentario, precio, imagen1, imagen2, imagen3, imagen4, estado, insumo_id) VALUES (7, 'espada2', 'UPEU007','Modelo 7', '10.0','','','','','viejo',1);
+INSERT INTO modelo_predefinido(modelo_predefinido_id, nombre, codigo, comentario, precio, imagen1, imagen2, imagen3, imagen4, estado, insumo_id) VALUES (8, 'samurai', 'UPEU008','Modelo 8', '20.0','','','','','viejo',1);
+INSERT INTO modelo_predefinido(modelo_predefinido_id, nombre, codigo, comentario, precio, imagen1, imagen2, imagen3, imagen4, estado, insumo_id) VALUES (9, 'collar-espada1', 'UPEU009','Modelo 9', '40.0','','','','','viejo',1);
+INSERT INTO modelo_predefinido(modelo_predefinido_id, nombre, codigo, comentario, precio, imagen1, imagen2, imagen3, imagen4, estado, insumo_id) VALUES (10, 'collar-espada2', 'UPEU0010','Modelo 10', '70.0','','','','','viejo',1);
+INSERT INTO modelo_predefinido(modelo_predefinido_id, nombre, codigo, comentario, precio, imagen1, imagen2, imagen3, imagen4, estado, insumo_id) VALUES (11, 'pose', 'UPEU0011','Modelo 11', '50.5','','','','','viejo',1);
+INSERT INTO modelo_predefinido(modelo_predefinido_id, nombre, codigo, comentario, precio, imagen1, imagen2, imagen3, imagen4, estado, insumo_id) VALUES (12, 'messi', 'UPEU0012','Modelo 12', '40.0','','','','','viejo',1);
+INSERT INTO modelo_predefinido(modelo_predefinido_id, nombre, codigo, comentario, precio, imagen1, imagen2, imagen3, imagen4, estado, insumo_id) VALUES (13, 'diego', 'UPEU0013','Modelo 13', '50.5','','','','','viejo',1);
+INSERT INTO modelo_predefinido(modelo_predefinido_id, nombre, codigo, comentario, precio, imagen1, imagen2, imagen3, imagen4, estado, insumo_id) VALUES (14, 'copa', 'UPEU0014','Modelo 14', '40.0','','','','','viejo',1);
+INSERT INTO modelo_predefinido(modelo_predefinido_id, nombre, codigo, comentario, precio, imagen1, imagen2, imagen3, imagen4, estado, insumo_id) VALUES (15, 'balon', 'UPEU0015','Modelo 15', '50.0','','','','','viejo',1);
+INSERT INTO modelo_predefinido(modelo_predefinido_id, nombre, codigo, comentario, precio, imagen1, imagen2, imagen3, imagen4, estado, insumo_id) VALUES (16, 'decoracion1', 'UPEU0016','Modelo 16', '80.0','','','','','viejo',1);
+INSERT INTO modelo_predefinido(modelo_predefinido_id, nombre, codigo, comentario, precio, imagen1, imagen2, imagen3, imagen4, estado, insumo_id) VALUES (17, 'decoracion2', 'UPEU0017','Modelo 17', '70.0','','','','','viejo',1);
+INSERT INTO modelo_predefinido(modelo_predefinido_id, nombre, codigo, comentario, precio, imagen1, imagen2, imagen3, imagen4, estado, insumo_id) VALUES (18, 'decoracion3', 'UPEU0018','Modelo 18', '20.0','','','','','viejo',1);
+INSERT INTO modelo_predefinido(modelo_predefinido_id, nombre, codigo, comentario, precio, imagen1, imagen2, imagen3, imagen4, estado, insumo_id) VALUES (19, 'decoracion4', 'UPEU0019','Modelo 19', '50.5','','','','','viejo',1);
+INSERT INTO modelo_predefinido(modelo_predefinido_id, nombre, codigo, comentario, precio, imagen1, imagen2, imagen3, imagen4, estado, insumo_id) VALUES (20, 'decoracion5', 'UPEU0020','Modelo 20', '30.0','','','','','viejo',1);
+INSERT INTO modelo_predefinido(modelo_predefinido_id, nombre, codigo, comentario, precio, imagen1, imagen2, imagen3, imagen4, estado, insumo_id) VALUES (21, 'cuy', 'UPEU0021','Modelo 21', '40.0','','','','','viejo',1);
+INSERT INTO modelo_predefinido(modelo_predefinido_id, nombre, codigo, comentario, precio, imagen1, imagen2, imagen3, imagen4, estado, insumo_id) VALUES (22, 'conejo', 'UPEU0022','Modelo 22', '40.0','','','','','viejo',1);
+INSERT INTO modelo_predefinido(modelo_predefinido_id, nombre, codigo, comentario, precio, imagen1, imagen2, imagen3, imagen4, estado, insumo_id) VALUES (23, 'serpiente', 'UPEU0023','Modelo 23', '60.0','','','','','viejo',1);
+INSERT INTO modelo_predefinido(modelo_predefinido_id, nombre, codigo, comentario, precio, imagen1, imagen2, imagen3, imagen4, estado, insumo_id) VALUES (24, 'perro', 'UPEU0024','Modelo 24', '50.5','','','','','viejo',1);
+INSERT INTO modelo_predefinido(modelo_predefinido_id, nombre, codigo, comentario, precio, imagen1, imagen2, imagen3, imagen4, estado, insumo_id) VALUES (25, 'gato', 'UPEU0025','Modelo 25', '50.0','','','','','viejo',1);

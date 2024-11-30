@@ -480,6 +480,17 @@ public class PedidosController {
 	@GetMapping("/buscar-estado/modelo/{estado}")
 	public ResponseEntity<List<Modelo_Predefinido>> listModeloPorEstado(@PathVariable ("estado") String estado){
 		List<Modelo_Predefinido> lisModelosEstado = modelo_predefinidoService.obtenerPorEstado(estado);
+		lisModelosEstado.forEach(modelo -> {
+			String nombreImagen1 = modelo.getImagen1(); // Asumiendo que este es el nombre de la imagen almacenada
+			modelo.setImagen1("/apipedidos/imagen-modelo/" + nombreImagen1);
+			String nombreImagen2 = modelo.getImagen2();
+			modelo.setImagen2("/apipedidos/imagen-modelo/" + nombreImagen2);
+			String nombreImagen3 = modelo.getImagen3();
+			modelo.setImagen3("/apipedidos/imagen-modelo/" + nombreImagen3);
+			String nombreImagen4 = modelo.getImagen4();
+			modelo.setImagen4("/apipedidos/imagen-modelo/" + nombreImagen4);
+		});
+		
 		return new ResponseEntity<List<Modelo_Predefinido>>(lisModelosEstado, HttpStatus.OK);
 	}
 
