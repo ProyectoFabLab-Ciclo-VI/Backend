@@ -66,6 +66,10 @@ public class PagoController {
 	@GetMapping("/list-all/pago")
 	public ResponseEntity<List<Pago>> getAllPagos (){
 		List<Pago> listAllPagos = pagoService.listAllPagos();
+		listAllPagos.forEach(voucher -> {
+			String nombreImagen = voucher.getVoucher(); //Asumiendo que este es el nombre de la imagen almacenada
+			voucher.setVoucher("/apipago/voucher-pago/" + nombreImagen);
+		});
 		return new ResponseEntity<List<Pago>>(listAllPagos, HttpStatus.OK);
 	}
 	
