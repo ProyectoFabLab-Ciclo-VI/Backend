@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,7 @@ public class PagoController {
 	private String voucherdirectorio;
 	
 	//CRUD Pago
+	//Listado por paginacion
 	@GetMapping("/list/pago")
 	public ResponseEntity<Page<Pago>> getPagos (@RequestParam int page,
 												@RequestParam int size){
@@ -58,6 +60,13 @@ public class PagoController {
 			voucher.setVoucher("/apipago/voucher-pago/" + nombreImagen);
 		});
 		return new ResponseEntity<>(listPagos, HttpStatus.OK);
+	}
+	
+	//Listado sin paginacion
+	@GetMapping("/list-all/pago")
+	public ResponseEntity<List<Pago>> getAllPagos (){
+		List<Pago> listAllPagos = pagoService.listAllPagos();
+		return new ResponseEntity<List<Pago>>(listAllPagos, HttpStatus.OK);
 	}
 	
 	@PostMapping("/add/pago")

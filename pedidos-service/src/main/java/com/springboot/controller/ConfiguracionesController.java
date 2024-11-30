@@ -94,7 +94,7 @@ public class ConfiguracionesController {
 		configuracion_CargoService.save(configuracion_Cargo);
 		return new ResponseEntity<>(configuracion_Cargo, HttpStatus.CREATED);
 	}
-	
+	/*
 	@PutMapping("/update/configuracion-cargo/{id}")
 	public ResponseEntity<?> updateConfiguracionCargo (@PathVariable ("id") int id, @RequestBody Configuracion_CargoDTO configuracion_CargoDTO){
 		Configuracion_Cargo configuracion_Cargo = configuracion_CargoService.getOne(id).get();
@@ -103,6 +103,14 @@ public class ConfiguracionesController {
 		configuracion_Cargo.setCargo(configuracion_CargoDTO.getCargo());
 		configuracion_CargoService.save(configuracion_Cargo);
 		return new ResponseEntity<>("Configuración de cargo actualizado", HttpStatus.OK);
+	}*/
+	@PutMapping("/update/configuracion-cargo")
+	public ResponseEntity<?> updateConfiguracionCargo(@RequestBody List<Configuracion_Cargo> cofiguraciones) {
+		for (Configuracion_Cargo configuracion_Cargo : cofiguraciones) {
+			configuracion_CargoService.save(configuracion_Cargo);
+		}
+		
+		return new ResponseEntity<>("Configuración de la lista de cargo actualizado", HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/delete/configuracion-cargo/{id}")
